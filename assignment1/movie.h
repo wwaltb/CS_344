@@ -4,6 +4,6 @@
 struct movie;
 
 struct movie *createMovie(char *line);
-struct movie *processMoives(char *filename);
+struct movie *processMovies(char *filename);
 
 #endif

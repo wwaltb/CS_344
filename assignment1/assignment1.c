@@ -10,5 +10,5 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    struct movie *list = processMoives(argv[1]);
+    struct movie *list = processMovies(argv[1]);
 }
