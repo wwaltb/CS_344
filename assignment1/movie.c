@@ -36,8 +36,23 @@ struct movie *createMovie(char *line) {
     return movie;
 }
 
+/**/
 struct movie *processMovies(char *filename) {
     // open filename for reading
     FILE *moviesFile = fopen(filename, "r");
-    
+
+    // create the head of linked list:
+    struct movie *head = NULL;
+    struct movie *curr = NULL;
+
+    // read the file line by line:
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t nread; 
+
+    while((nread = getline(&line, &len, moviesFile)) != -1) {
+        printf(line);
+        //struct movie *newMovie = createMovie(line);
+
+    }
 }
