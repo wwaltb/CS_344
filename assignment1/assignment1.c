@@ -11,4 +11,5 @@ int main(int argc, char **argv) {
     }
 
     struct movie *list = processMovies(argv[1]);
+    printMovies(list);
 }

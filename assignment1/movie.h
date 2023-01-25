@@ -5,5 +5,6 @@ struct movie;
 
 struct movie *createMovie(char *line);
 struct movie *processMovies(char *filename);
+void printMovies(struct movie *head);
 
 #endif
