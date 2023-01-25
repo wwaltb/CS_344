@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 struct movie {
     char *title;
@@ -53,13 +52,12 @@ struct movie *processMovies(char *filename) {
     int headers = 1;
 
     while((nread = getline(&line, &len, moviesFile)) != -1) {
-        int i = 1;
-        if(i == 1) {
+        if(headers == 1) {
             printf("Headers line.\n");
             headers = 0;
             continue;
         }
-        //printf(line);
+        printf(line);
         //struct movie *newMovie = createMovie(line);
 
     }
