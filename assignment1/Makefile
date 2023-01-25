@@ -1,5 +1,2 @@
-CC=gcc
-CFLAGS=-I.
-
-movies: assignment1.o movie.o
-	$(CC) assignment1.o movie.o -o movies
+movies: assignment1.c movie.c
+	gcc assignment1.c movie.c -o movies
