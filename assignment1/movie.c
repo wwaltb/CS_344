@@ -50,12 +50,12 @@ struct movie *processMovies(char *filename) {
     char *line = NULL;
     size_t len = 0;
     ssize_t nread;
-    bool headers = true;
+    int headers = 1;
 
     while((nread = getline(&line, &len, moviesFile)) != -1) {
-        if(headers == true) {
+        if(headers == 1) {
             printf("Headers line.\n");
-            headers = false;
+            headers = 0;
             continue;
         }
         printf(line);
