@@ -10,6 +10,13 @@ struct movie {
     struct movie *next;
 };
 
+char **getLanguages(char *langToken) {
+    //char **langArray = malloc(5 * sizeof(char*));
+    char **langArray = NULL;
+
+    return langArray;
+}
+
 struct movie *createMovie(char *line) {
     struct movie *movie = malloc(sizeof(struct movie));
 
@@ -27,10 +34,12 @@ struct movie *createMovie(char *line) {
     movie->year = atoi(token);
 
     // third token is languages
-
+    token = strtok_r(line, ",", &saveptr);
+    movie->languages = getLanguages(token);
 
     // last token is rating
-
+    token = strtok_r(line, ",", &saveptr);
+    movie->rating = strtod(token, NULL);
 
     movie->next = NULL;
     return movie;
@@ -41,7 +50,7 @@ struct movie *processMovies(char *filename) {
     // open filename for reading
     FILE *moviesFile = fopen(filename, "r");
 
-    // create the head of linked list:
+    // create the head of linked list
     struct movie *head = NULL;
     struct movie *curr = NULL;
 
@@ -52,13 +61,22 @@ struct movie *processMovies(char *filename) {
     int headers = 1;
 
     while((nread = getline(&line, &len, moviesFile)) != -1) {
+        // skip the first line containing the headers
         if(headers == 1) {
-            printf("Headers line.\n");
             headers = 0;
             continue;
         }
-        printf(line);
-        //struct movie *newMovie = createMovie(line);
 
+        // create new movie node based on line data
+        struct movie *newMovie = createMovie(line);
+
+        if(head == NULL) {
+            head = newMovie;
+            curr = newMovie;
+        }
+        else {
+            curr->next = newMovie;
+            curr = newMovie;
+        }
     }
 }
