@@ -53,7 +53,8 @@ struct movie *processMovies(char *filename) {
     int headers = 1;
 
     while((nread = getline(&line, &len, moviesFile)) != -1) {
-        if(line != NULL) {
+        int i = 1;
+        if(i == 1) {
             printf("Headers line.\n");
             headers = 0;
             continue;
