@@ -84,7 +84,7 @@ struct movie *processMovies(char *filename) {
 void printMovies(struct movie *head) {
     struct movie *curr = head;
     while(curr != NULL) {
-        printf("%s %d %d\n", curr->title, curr->year, curr->rating);
+        printf("%s\n", curr->title);
         curr = curr->next;
     }
 }
