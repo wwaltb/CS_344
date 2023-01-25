@@ -6,7 +6,7 @@
 int main(int argc, char **argv) {
     if(argc != 2) {
         printf("You must provide the name of the file to process\n");
-        printf("Example usage: ./students student_info1.txt\n");
+        printf("Example usage: ./movies movie_sampe_1.txt\n");
         return EXIT_FAILURE;
     }
 

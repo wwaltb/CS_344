@@ -79,12 +79,14 @@ struct movie *processMovies(char *filename) {
             curr = newMovie;
         }
     }
+
+    return head;
 }
 
 void printMovies(struct movie *head) {
     struct movie *curr = head;
     while(curr != NULL) {
-        printf("%s\n", curr->title);
+        printf("%s %d %d\n", curr->title, curr->year, curr->rating);
         curr = curr->next;
     }
 }
