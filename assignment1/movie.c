@@ -49,10 +49,13 @@ struct movie *processMovies(char *filename) {
     char *line = NULL;
     size_t len = 0;
     ssize_t nread;
-
-    getline(&line, &len, moviesFile);       // skip first line containing headers
+    int headers = 1;
 
     while((nread = getline(&line, &len, moviesFile)) != -1) {
+        if(headers == 1) {
+            headers == 0;
+            continue;
+        }
         printf(line);
         //struct movie *newMovie = createMovie(line);
 
