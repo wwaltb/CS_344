@@ -4,9 +4,9 @@
 
 struct movie {
     char *title;
-    int year;
+    char *year;
     char **languages;
-    float rating;
+    char *rating;
     struct movie *next;
 };
 
@@ -31,7 +31,9 @@ struct movie *createMovie(char *line) {
 
     // second token is year
     token = strtok_r(line, ",", &saveptr);
-    movie->year = atoi(token);
+    movie->year = calloc(strlen(token) + 1, sizeof(char));
+    strcpy(movie->year, token);
+    //movie->year = atoi(token);
 
     // third token is languages
     token = strtok_r(line, ",", &saveptr);
@@ -39,7 +41,9 @@ struct movie *createMovie(char *line) {
 
     // last token is rating
     token = strtok_r(line, ",", &saveptr);
-    movie->rating = strtod(token, NULL);
+    movie->rating = calloc(strlen(token) + 1, sizeof(char));
+    strcpy(movie->rating, token);
+    //movie->rating = strtod(token, NULL);
 
     movie->next = NULL;
     return movie;
@@ -86,7 +90,7 @@ struct movie *processMovies(char *filename) {
 void printMovies(struct movie *head) {
     struct movie *curr = head;
     while(curr != NULL) {
-        printf("%s %d %d\n", curr->title, curr->year, curr->rating);
+        printf("%s %s %s\n", curr->title, curr->year, curr->rating);
         curr = curr->next;
     }
 }
