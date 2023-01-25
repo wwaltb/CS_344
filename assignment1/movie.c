@@ -48,7 +48,9 @@ struct movie *processMovies(char *filename) {
     // read the file line by line:
     char *line = NULL;
     size_t len = 0;
-    ssize_t nread; 
+    ssize_t nread;
+
+    getline(&line, &len, moviesFile);       // skip first line containing headers
 
     while((nread = getline(&line, &len, moviesFile)) != -1) {
         printf(line);
