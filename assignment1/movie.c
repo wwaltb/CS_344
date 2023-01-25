@@ -59,7 +59,7 @@ struct movie *processMovies(char *filename) {
             headers = 0;
             continue;
         }
-        printf(line);
+        //printf(line);
         //struct movie *newMovie = createMovie(line);
 
     }
