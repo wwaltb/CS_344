@@ -1,6 +1,3 @@
-movies: assignment1.c movie.c
-	gcc assignment1.c movie.c -o movies
-
 # build an executable named movies from main.c
 all: main.c 
     gcc --std=gnu99 -o movies assignment1.c movie.c
