@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -std=gnu99
 
-all: main.c 
+all: assignment1.c movie.c
 	${CC} ${CFLAGS} -o movies assignment1.c movie.c
 
 clean:

@@ -1,2 +1,2 @@
-compile by running the following command:
-    gcc assignment1.c movie.c -o assignment1
+compile using make or by running the command:
+    gcc -std=gnu99 -o movies assignment1.c movie.c
