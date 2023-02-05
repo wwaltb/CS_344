@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
+#include <time.h>
+#include <sys/stat.h>
 
 struct movie {
     char *title;
@@ -79,7 +82,8 @@ struct movie *createMovie(char *line) {
 }
 
 /*
- * createMovieList - processes a movie data file into a linked list of movies
+ * createMovieList - processes a movie data file into a linked 
+ *      list of movies
  * @filename: full name of the movie file
  *
  * Return: the head of the linked list of movies
@@ -88,7 +92,6 @@ struct movie *createMovieList(char *filename) {
     // open filename for reading
     FILE *moviesFile = fopen(filename, "r");
     if(moviesFile == NULL) {
-        printf("Error opening file %s\n", filename);
         return NULL;
     }
 
@@ -125,8 +128,6 @@ struct movie *createMovieList(char *filename) {
         processed++;
     }
 
-    printf("Processed file %s and parsed data for %d movies\n", filename, processed);
-
     return head;
 }
 
@@ -138,6 +139,61 @@ void freeMovieList(struct movie *head) {
     if(head == NULL) return;
     freeMovieList(head->next);
     free(head);
+}
+
+/*
+ * processMovieFile - makes a file of movies for each year
+ *      from a movie data file. This file is put into a new
+ *      random directory.
+ * @filename: string containing the file name containing the
+ *      movie data.
+ * @head: the head of the linked list of movies
+ */
+void processMovieFile(char *filename, struct movie *head) {
+    srand(time(NULL));          // initialize random seed
+
+    // make a directory named "bringenw.movie.random":
+    char *dirName = (char*) calloc(strlen("bringenw.movies.random"), sizeof(char));
+    sprintf(dirName, "bringenw.movies.%d", rand() % 100000);      // .random is random [0,99999]
+
+    // successfully create a new directory
+    int result = 1;
+    while(result != 0) {
+        result = mkdir(dirName, S_IRWXU | S_IRGRP | S_IXGRP);     // permissions 'rwxr-x---'
+        printf("Created directory with name %s\n", dirName);
+    }
+
+    // open directory and make file containing movies for each year
+    DIR *dir = opendir(dirName);
+
+    for(int year = 1900; year <= 2021; year++) {            // go through each year
+        char filename[strlen(dirName) + strlen("xxxx.txt") + 2];
+        sprintf(filename, "%s/%d.txt", dirName, year);                  // string contains "year.txt"
+        FILE *file = NULL;
+
+        struct movie *curr = head;
+        while(curr != NULL) {
+            // continue if movie is not in year
+            if(curr->year != year) {
+                curr = curr->next;
+                continue;
+            }
+
+            // create file if first movie found
+            if(file == NULL) {
+                file = fopen(filename, "w");
+            }
+
+            // add movie title to a new line
+            fprintf(file, "%s\n", curr->title);
+
+            curr = curr->next;
+        }
+        fclose(file);
+    }
+
+    closedir(dir);
+    free(dirName);
 }
 
 /*

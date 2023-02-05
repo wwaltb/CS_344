@@ -58,5 +58,5 @@ int main(int argc, char **argv) {
     }
     
     // free the list of movies
-    freeMovies(list);
+    freeMovieList(list);
 }
