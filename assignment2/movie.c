@@ -182,6 +182,7 @@ void processMovieFile(char *filename, struct movie *head) {
             // create file if first movie found
             if(file == NULL) {
                 file = fopen(filename, "w");
+                chmod(filename, S_IRUSR | S_IWUSR | S_IRGRP);
             }
 
             // add movie title to a new line
