@@ -13,5 +13,5 @@ test:
 	./movies_by_year
 
 leak-test:
-	${CC} ${CFLAGS} -o movies main.c movie.c
+	${CC} ${CFLAGS} -o movies_by_year main.c movie.c
 	valgrind --leak-check=yes ./movies_by_year
