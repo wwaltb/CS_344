@@ -166,7 +166,10 @@ void processMovieFile(char *filename, struct movie *head) {
     // open directory and make file containing movies for each year
     DIR *dir = opendir(dirName);
 
+    printf("opened dir");   // delete me later
+
     for(int year = 1900; year <= 2021; year++) {            // go through each year
+        printf("year %d\n", year);  // delete me later
         char filename[strlen(dirName) + strlen("xxxx.txt") + 2];
         sprintf(filename, "%s/%d.txt", dirName, year);                  // string contains "year.txt"
         FILE *file = NULL;
