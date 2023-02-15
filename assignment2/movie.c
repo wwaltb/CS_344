@@ -153,7 +153,7 @@ void processMovieFile(char *filename, struct movie *head) {
     srand(time(NULL));          // initialize random seed
 
     // make a directory named "bringenw.movie.random":
-    char dirName = (char*) calloc(strlen("bringenw.movies.random") + 2, sizeof(char));
+    char *dirName = (char*) calloc(strlen("bringenw.movies.random") + 2, sizeof(char));
     sprintf(dirName, "bringenw.movies.%d", rand() % 100000);      // .random is random [0,99999]
 
     // successfully create a new directory
