@@ -1,6 +1,6 @@
 # build an executable named movies from assignment1.c and movie.c
 CC = gcc
-CFLAGS = -std=gnu99
+CFLAGS = -std=gnu99 -g
 
 all: main.c movie.c
 	${CC} ${CFLAGS} -o movies_by_year main.c movie.c
