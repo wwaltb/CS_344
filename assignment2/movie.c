@@ -153,7 +153,7 @@ void processMovieFile(char *filename, struct movie *head) {
     srand(time(NULL));          // initialize random seed
 
     // make a directory named "bringenw.movie.random":
-    char dirName[strlen("bringenw.movies.random") + 2];
+    char dirName = (char*) calloc(strlen("bringenw.movies.random") + 2, sizeof(char));
     sprintf(dirName, "bringenw.movies.%d", rand() % 100000);      // .random is random [0,99999]
 
     // successfully create a new directory
@@ -166,20 +166,9 @@ void processMovieFile(char *filename, struct movie *head) {
     // open directory and make file containing movies for each year
     DIR *dir = opendir(dirName);
 
-    printf("opened dir");   // delete me later
-
     for(int year = 1900; year <= 2021; year++) {            // go through each year
-        printf("year %d\n", year);  // delete me later
         char *filename = (char*) calloc(strlen(dirName) + strlen("xxxx.txt") + 4, sizeof(char));
-
-        if (filename == NULL) {
-            fprintf(stderr, "Error: failed to allocate memory for filename\n");
-            exit(1);
-        }
-        else printf("filename: %s\n", filename);
-
         sprintf(filename, "%s/%d.txt", dirName, year);                  // string contains "year.txt"
-        printf("filename: %s", filename);
         FILE *file = NULL;
 
         struct movie *curr = head;
