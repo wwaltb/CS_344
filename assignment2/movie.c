@@ -201,7 +201,8 @@ void processMovieFile(char *filename, struct movie *head) {
 
             curr = curr->next;
         }
-        fclose(file);
+        if(file != NULL)
+            fclose(file);
         free(filename);
     }
 
