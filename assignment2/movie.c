@@ -170,7 +170,7 @@ void processMovieFile(char *filename, struct movie *head) {
 
     for(int year = 1900; year <= 2021; year++) {            // go through each year
         printf("year %d\n", year);  // delete me later
-        char filename[strlen(dirName) + strlen("xxxx.txt") + 4];
+        char *filename = (char*) calloc(strlen(dirName) + strlen("xxxx.txt") + 4, sizeof(char));
         sprintf(filename, "%s/%d.txt", dirName, year);                  // string contains "year.txt"
         printf("filename: %s", filename);
         FILE *file = NULL;
@@ -195,6 +195,7 @@ void processMovieFile(char *filename, struct movie *head) {
             curr = curr->next;
         }
         fclose(file);
+        free(filename);
     }
 
     closedir(dir);
