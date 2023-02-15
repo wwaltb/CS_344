@@ -173,7 +173,7 @@ void processMovieFile(char *filename, struct movie *head) {
         char *filename = (char*) calloc(strlen(dirName) + strlen("xxxx.txt") + 4, sizeof(char));
 
         if (filename == NULL) {
-            printf(stderr, "Error: failed to allocate memory for filename\n");
+            fprintf(stderr, "Error: failed to allocate memory for filename\n");
             exit(1);
         }
         else printf("filename: %s\n", filename);
