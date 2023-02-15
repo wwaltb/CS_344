@@ -172,6 +172,7 @@ void processMovieFile(char *filename, struct movie *head) {
         printf("year %d\n", year);  // delete me later
         char filename[strlen(dirName) + strlen("xxxx.txt") + 2];
         sprintf(filename, "%s/%d.txt", dirName, year);                  // string contains "year.txt"
+        printf("filename: %s", filename);
         FILE *file = NULL;
 
         struct movie *curr = head;
