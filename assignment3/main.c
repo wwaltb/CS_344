@@ -51,6 +51,7 @@ void loop() {
         char *prevToken = token;
         while(token = strtok(NULL, " ")) {
             printf("token: %s\n", token);
+            printf("prevToken: %s\n", prevToken);
             if(prevToken == "<") {
                 // input file
                 printf("Input file: %s\n", token);
