@@ -12,7 +12,7 @@ int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
 void loop();
-void exit();
+// void exit();
 
 int main() {
     loop();
@@ -112,6 +112,6 @@ void loop() {
     }
 }
 
-void exit() {
+// void exit() {
     
-}
+// }
