@@ -83,6 +83,7 @@ void loop() {
         int i = 0;
         while(argv[i] != NULL) {
             printf("%s ", argv[i]);
+            i++;
         }
         printf("\n");
     }
