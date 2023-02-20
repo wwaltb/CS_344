@@ -56,7 +56,6 @@ void loop() {
         // check for any non-whitespace chars
         char *token = NULL;
         if(!(token = strtok(input, " \n"))) continue;       // continue if blank line
-        printf("token: %s\n", token);
 
         argv[0] = token;
         argc++;
@@ -64,8 +63,6 @@ void loop() {
         // parse input into command and arguments:
         char *prevToken = token;
         while(token = strtok(NULL, " ")) {
-            printf("token: %s\n", token);
-            printf("prevToken: %s\n", prevToken);
 
             // skip '<' and '>' characters
             if(strcmp(token, "<") == 0 || strcmp(token, ">") == 0) {
@@ -73,7 +70,7 @@ void loop() {
                 continue;
             }
 
-
+            // handle special characters
             if(strcmp(prevToken, "<") == 0) {               // input file
                 inputFile = token;
                 prevToken = token;
