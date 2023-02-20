@@ -47,24 +47,43 @@ void loop() {
         if(!(token = strtok(input, " \n"))) continue;       // continue if blank line
         printf("token: %s\n", token);
 
+        argv[0] = token;
+        argc++;
+
         // parse input into command and arguments:
         char *prevToken = token;
         while(token = strtok(NULL, " ")) {
             printf("token: %s\n", token);
             printf("prevToken: %s\n", prevToken);
-            if(strcmp(prevToken, "<") == 0) {
-                // input file
-                printf("Input file: %s\n", token);
+
+            if(strcmp(prevToken, "<") == 0) {               // input file
+                inputFile = token;
+                continue;
             }
 
-            if(prevToken == ">") {
-                // output file
-                printf("Output file: %s\n", token);
+            if(strcmp(prevToken, ">") == 0) {               // output file
+                outputFile = token;
+                continue;
             }
+
+            if(strcmp(token, "&") == 0) {                   // background mode
+                runInBg = 1;
+                break;
+            }
+
+            // assume token is argument otherwise
+            argv[argc] = token;
+            argc++;
 
             prevToken = token;                              // store token for next iteration
         }
+        argv[argc] = NULL;          // null terminate argv
 
-        printf("command to exec: %s\n", input);
+        // print arguments:
+        int i = 0;
+        while(argv[i] != NULL) {
+            printf("%s ", argv[i]);
+        }
+        printf("\n");
     }
 }
