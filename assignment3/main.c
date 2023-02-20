@@ -76,12 +76,14 @@ void loop() {
 
             if(strcmp(prevToken, "<") == 0) {               // input file
                 inputFile = token;
+                prevToken = token;
                 printf("inputFile: %s\n", inputFile);
                 continue;
             }
 
             if(strcmp(prevToken, ">") == 0) {               // output file
                 outputFile = token;
+                prevToken = token;
                 printf("outputFile: %s\n", outputFile);
                 continue;
             }
