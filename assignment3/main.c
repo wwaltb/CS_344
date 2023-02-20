@@ -37,18 +37,19 @@ void loop() {
         memset(input, '\0', MAX_CHAR);
 		fgets(input, MAX_CHAR, stdin);
 
-        if(input[0] == '#') continue;           // continue if comment
+        if(input[0] == '#') continue;                       // continue if comment
 
         // remove trailing endline
         input[strcspn(input, "\n")] = 0;
 
         // check for any non-whitespace chars
-        char *token = strtok(input, " \n");
-        if(token == NULL) continue;             // continue if blank line
+        char *token = NULL;
+        if(!(token = strtok(input, " \n"))) continue;       // continue if blank line
+        printf("token: %s\n", token);
 
         // parse input into command and arguments:
-        char *prevToken = NULL;
-        while(token != NULL) {
+        char *prevToken = token;
+        while(token = strtok(NULL, " ")) {
             printf("token: %s\n", token);
             if(prevToken == "<") {
                 // input file
@@ -60,8 +61,7 @@ void loop() {
                 printf("Output file: %s\n", token);
             }
 
-            prevToken = token;                  // store token for next iteration
-            token = strtok(NULL, " ");
+            prevToken = token;                              // store token for next iteration
         }
 
         printf("command to exec: %s\n", input);
