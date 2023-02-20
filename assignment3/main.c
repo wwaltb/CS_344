@@ -52,7 +52,7 @@ void loop() {
         while(token = strtok(NULL, " ")) {
             printf("token: %s\n", token);
             printf("prevToken: %s\n", prevToken);
-            if(prevToken == "<") {
+            if(strcmp(prevToken, "<") == 0) {
                 // input file
                 printf("Input file: %s\n", token);
             }
