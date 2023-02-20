@@ -72,11 +72,13 @@ void loop() {
 
             if(strcmp(prevToken, "<") == 0) {               // input file
                 inputFile = token;
+                printf("inputFile: %s\n", inputFile);
                 continue;
             }
 
             if(strcmp(prevToken, ">") == 0) {               // output file
                 outputFile = token;
+                printf("outputFile: %s\n", outputFile);
                 continue;
             }
 
@@ -104,7 +106,7 @@ void loop() {
         // run command:
 
         // built in commands:
-        if(strcmp(argv[0], "exit")) {
+        if(strcmp(argv[0], "exit") == 0) {
             // kill all processes
             exit = 1;
             break;
