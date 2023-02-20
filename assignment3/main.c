@@ -43,12 +43,9 @@ void loop() {
         input[strcspn(input, "\n")] = 0;
 
         // check for any non-whitespace chars
-        char *token = NULL;
-        if(!(token = strtok(input, " \n"))) continue;       // continue if blank line
-        printf("token: %s\n", token);
+        char *token = NULL, *prevToken = NULL;
 
         // parse input into command and arguments:
-        char *prevToken = token;
         while(token = strtok(NULL, " ")) {
             printf("token: %s\n", token);
             if(prevToken == "<") {
