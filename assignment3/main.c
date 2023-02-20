@@ -12,6 +12,7 @@ int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
 void loop();
+void exit();
 
 int main() {
     loop();
@@ -23,12 +24,20 @@ void loop() {
     const char * devnull = "/dev/null";
 
     while(!exit) {
-        char input[2048];
-        char *argv[512];
+        char input[MAX_CHAR];
+        char *argv[MAX_ARGS];
         int argc = 0;
         char *inputFile;
         char *outputFile;
         int runInBg = 0;
+
+        // ignore SIGINT:
+        struct sigaction SIGINT_action = {0};
+        SIGINT_action.sa_handler = SIG_IGN;
+        sigaction(SIGINT, &SIGINT_action, NULL);
+
+        // check background processes:
+        // TODO
 
         // prompt user for input:
         printf(": ");
@@ -41,6 +50,8 @@ void loop() {
 
         // remove trailing endline
         input[strcspn(input, "\n")] = 0;
+
+        // expand variable '$$'
 
         // check for any non-whitespace chars
         char *token = NULL;
@@ -55,6 +66,9 @@ void loop() {
         while(token = strtok(NULL, " ")) {
             printf("token: %s\n", token);
             printf("prevToken: %s\n", prevToken);
+
+            // skip '<' and '>' characters
+            if(strcmp(token, "<") == 0 || strcmp(token, ">") == 0) continue;
 
             if(strcmp(prevToken, "<") == 0) {               // input file
                 inputFile = token;
@@ -86,5 +100,18 @@ void loop() {
             i++;
         }
         printf("\n");
+
+        // run command:
+
+        // built in commands:
+        if(strcmp(argv[0], "exit")) {
+            // kill all processes
+            exit = 1;
+            break;
+        }
     }
+}
+
+void exit() {
+    
 }
