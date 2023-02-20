@@ -136,7 +136,8 @@ void loop() {
         }
 
         if(strcmp(argv[0], "status") == 0) {                // status command
-
+            printf("exit value %d\n", status);
+            fflush(stdout);
         }
     }
 }
