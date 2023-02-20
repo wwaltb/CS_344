@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 
 // constants:
 #define MAX_CHAR 2048
@@ -38,6 +39,10 @@ void loop() {
 
         // check background processes:
         // TODO
+
+        char *cwd = malloc(100);
+        getcwd(cwd, 100);
+        printf("cwd: %s\n", cwd);
 
         // prompt user for input:
         printf(": ");
@@ -109,10 +114,29 @@ void loop() {
         // run command:
 
         // built in commands:
-        if(strcmp(argv[0], "exit") == 0) {
+        if(strcmp(argv[0], "exit") == 0) {                  // exit command
             // kill all processes
             exit = 1;
             break;
+        }
+
+        if(strcmp(argv[0], "cd") == 0) {                    // cd command
+            if(argc == 1) {
+                // chdir to home, print error if fails
+                if(chdir(getenv("HOME")) != 0) perror("cd");
+            }
+            else if(argc == 2) {
+                // chdir to argv[1], print error if fails
+                if(chdir(argv[1]) != 0) perror("cd");
+            }
+            else {
+                printf("smallsh: cd: usage: cd [directory]\n");
+                fflush(stdout);
+            }
+        }
+
+        if(strcmp(argv[0], "status") == 0) {                // status command
+
         }
     }
 }
