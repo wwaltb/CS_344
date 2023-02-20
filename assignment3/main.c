@@ -68,7 +68,11 @@ void loop() {
             printf("prevToken: %s\n", prevToken);
 
             // skip '<' and '>' characters
-            if(strcmp(token, "<") == 0 || strcmp(token, ">") == 0) continue;
+            if(strcmp(token, "<") == 0 || strcmp(token, ">") == 0) {
+                prevToken = token;
+                continue;
+            }
+
 
             if(strcmp(prevToken, "<") == 0) {               // input file
                 inputFile = token;
