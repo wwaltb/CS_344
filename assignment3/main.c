@@ -49,6 +49,7 @@ void loop() {
         // parse input into command and arguments:
         char *prevToken = NULL;
         while(token = strtok(NULL, " ")) {
+            printf("token: %s\n", token);
             if(prevToken == "<") {
                 // input file
                 printf("Input file: %s\n", token);
