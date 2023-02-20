@@ -38,12 +38,15 @@ void loop() {
 		fgets(input, MAX_CHAR, stdin);
 
         // continue if blank line or comment
-        if(input[0] == '\n' || input[0] == '#') {
+        if(input[0] == '#') {
             continue;
         }
 
         // remove trailing endline
         input[strcspn(input, "\n")] = 0;
+
+        char *token = strtok(input, " \n");
+        if(token == NULL) continue;
 
         printf("command to exec: %s\n", input);
     }
