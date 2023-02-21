@@ -24,6 +24,7 @@ int fgOnlyMode;         // 0 = false, 1 = true
 // forward declarations:
 void pidListAdd(struct pidNode *head, pid_t pid);
 void checkBgProcesses(struct pidNode *head);
+void checkBgProcessesNS();
 void killBgProcesses(struct pidNode *head);
 
 int main() {
@@ -45,7 +46,7 @@ int main() {
         sigaction(SIGINT, &SIGINT_action, NULL);
 
         // check background processes:
-        checkBgProcesses(head);
+        checkBgProcessesNS();
 
         // prompt user for input:
         printf(": ");
@@ -109,7 +110,7 @@ int main() {
 
         // built in commands:
         if(strcmp(argv[0], "exit") == 0) {                  // exit command
-            killBgProcesses(head);
+            killBgProcessesNS();
             break;
         }
 
@@ -193,8 +194,6 @@ int main() {
 
         else {                                              // parent process
             if(runInBg) {
-                pidListAdd(head, pid);
-                printf("added pid %d\n", head->pid);
                 printf("background pid is %d\n", pid);
                 continue;
             }
@@ -259,6 +258,24 @@ void checkBgProcesses(struct pidNode *head) {
     }
 }
 
+void checkBgProcesseNS() {
+    pid_t pid;
+    int status;
+    do {
+        pid = waitpid(-1, &status, WNOHANG);
+        if(pid <= 0) continue;
+        // child process has exited:
+        if(WIFEXITED(status)) {
+            printf("background pid %d is done: exit value %d\n", pid, WEXITSTATUS(status));
+            fflush(stdout);
+        }
+        else if(WIFSIGNALED(status)) {
+            printf("background pid %d is done: terminated by signal %d\n", pid, WTERMSIG(status));
+            fflush(stdout);
+        }
+    } while(pid != 0 && pid != -1);
+}
+
 void killBgProcesses(struct pidNode *head) {
     struct pidNode *temp = head;
     while(head != NULL) {
@@ -267,6 +284,11 @@ void killBgProcesses(struct pidNode *head) {
         free(head);
         head = temp;
     }
+}
+
+void killBgProcessesNS() {
+    pid_t pgid = getgpid(0);
+    kill(-pgid, SIGKILL);
 }
 
 // TODO:
