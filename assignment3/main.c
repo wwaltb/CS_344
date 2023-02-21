@@ -26,6 +26,7 @@ void pidListAdd(struct pidNode *head, pid_t pid);
 void checkBgProcesses(struct pidNode *head);
 void checkBgProcessesNS();
 void killBgProcesses(struct pidNode *head);
+void killBgProcessesNS();
 
 int main() {
     int status = 0;
