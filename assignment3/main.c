@@ -288,7 +288,7 @@ void killBgProcesses(struct pidNode *head) {
 }
 
 void killBgProcessesNS() {
-    pid_t pgid = getgpid(0);
+    pid_t pgid = getpgid(0);
     kill(-pgid, SIGKILL);
 }
 
