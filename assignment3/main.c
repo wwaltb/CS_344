@@ -225,6 +225,7 @@ void checkBgProcesses(struct pidNode *head) {
     struct pidNode *prev = NULL;
     int status;
     while(curr != NULL) {
+        printf("checking bg process %d\n", curr->pid);
         // wait for each process in list
         pid_t pid = waitpid(curr->pid, &status, WNOHANG);
 
