@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 
 // constants:
 #define MAX_CHAR 2048
@@ -13,23 +17,21 @@ int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
 void loop();
-// void exit();
 
 int main() {
     loop();
 }
 
 void loop() {
-    int exit = 0;
     int status = 0;
     const char * devnull = "/dev/null";
 
-    while(!exit) {
+    while(1) {
         char input[MAX_CHAR];
         char *argv[MAX_ARGS];
         int argc = 0;
-        char *inputFile;
-        char *outputFile;
+        char *inputFile = NULL;
+        char *outputFile = NULL;
         int runInBg = 0;
 
         // ignore SIGINT:
@@ -116,7 +118,6 @@ void loop() {
         // built in commands:
         if(strcmp(argv[0], "exit") == 0) {                  // exit command
             // kill all processes
-            exit = 1;
             break;
         }
 
@@ -133,15 +134,79 @@ void loop() {
                 printf("smallsh: cd: usage: cd [directory]\n");
                 fflush(stdout);
             }
+            continue;
         }
 
         if(strcmp(argv[0], "status") == 0) {                // status command
-            printf("exit value %d\n", status);
+            if (WIFEXITED(status)){
+				printf("exit value %d\n", WEXITSTATUS(status));
+			}
+			else if (WIFSIGNALED(status)){
+				printf("terminated by signal %d\n", WTERMSIG(status));
+			}
             fflush(stdout);
+            continue;
+        }
+
+        // use exec() to run command:
+        pid_t pid = fork();
+        int fdIn, fdOut;
+
+        if(pid == -1) {                                     // fork error
+            perror("fork");
+            exit(1);
+        }
+
+        else if(pid == 0) {                                 // child process
+            if(!runInBg) {
+                SIGINT_action.sa_handler = SIG_DFL;
+                SIGINT_action.sa_flags = 0;
+                sigaction(SIGINT, &SIGINT_action, NULL);
+            }
+
+            if(runInBg && !inputFile) inputFile = devnull;
+            if(runInBg && !outputFile) outputFile = devnull;
+
+            if(inputFile) {
+                fdIn = open(inputFile, O_RDONLY);
+                if(fdIn == -1) {
+                    perror("open");
+                    exit(1);
+                }
+                dup2(fdIn, STDIN_FILENO);
+            }
+
+            if(outputFile) {
+                fdOut = open(outputFile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+                if(fdOut == -1) {
+                    perror("open");
+                    exit(1);
+                }
+                dup2(fdOut, STDOUT_FILENO);
+            }
+
+            status = execvp(argv[0], argv);
+            if(status == -1) {
+                perror(argv[0]);
+                status = 1;
+            }
+            exit(EXIT_FAILURE);
+        }
+
+        else {                                              // parent process
+            if(runInBg) {
+                continue;
+            }
+
+            waitpid(pid, &status, 0);
+
+            if(WIFSIGNALED(status)) {
+                status = WTERMSIG(status);
+                printf("terminated by signal %d\n", status);
+            }
+            else if(WIFEXITED(status)) {
+                status = WEXITSTATUS(status);
+            }
         }
     }
 }
-
-// void exit() {
-    
-// }
