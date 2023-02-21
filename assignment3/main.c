@@ -12,19 +12,22 @@
 #define MAX_CHAR 2048
 #define MAX_ARGS 512
 
+// structs:
+struct pidNode {
+    pid_t pid;
+    struct pidNode *next;
+};
+
 // globals:
 int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
-void loop();
+void pidListAdd(struct pidNode *head, pid_t pid);
 
 int main() {
-    loop();
-}
-
-void loop() {
     int status = 0;
-    const char * devnull = "/dev/null";
+    char *devnull = "/dev/null";
+    struct pidNode *head = NULL;
 
     while(1) {
         char input[MAX_CHAR];
@@ -42,10 +45,6 @@ void loop() {
         // check background processes:
         // TODO
 
-        char *cwd = malloc(100);
-        getcwd(cwd, 100);
-        printf("cwd: %s\n", cwd);
-
         // prompt user for input:
         printf(": ");
 		fflush(stdout);
@@ -59,6 +58,7 @@ void loop() {
         input[strcspn(input, "\n")] = 0;
 
         // expand variable '$$'
+        // TODO
 
         // check for any non-whitespace chars
         char *token = NULL;
@@ -105,19 +105,11 @@ void loop() {
         }
         argv[argc] = NULL;          // null terminate argv
 
-        // print arguments:
-        int i = 0;
-        while(argv[i] != NULL) {
-            printf("%s ", argv[i]);
-            i++;
-        }
-        printf("\n");
-
         // run command:
 
         // built in commands:
         if(strcmp(argv[0], "exit") == 0) {                  // exit command
-            // kill all processes
+            killBgProcesses(head);
             break;
         }
 
@@ -158,15 +150,18 @@ void loop() {
         }
 
         else if(pid == 0) {                                 // child process
+            // catch SIGIN with default behavior for child processes
             if(!runInBg) {
                 SIGINT_action.sa_handler = SIG_DFL;
                 SIGINT_action.sa_flags = 0;
                 sigaction(SIGINT, &SIGINT_action, NULL);
             }
 
+            // set background redirects if not specified
             if(runInBg && !inputFile) inputFile = devnull;
             if(runInBg && !outputFile) outputFile = devnull;
 
+            // redirect input
             if(inputFile) {
                 fdIn = open(inputFile, O_RDONLY);
                 if(fdIn == -1) {
@@ -176,6 +171,7 @@ void loop() {
                 dup2(fdIn, STDIN_FILENO);
             }
 
+            // redirect output
             if(outputFile) {
                 fdOut = open(outputFile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
                 if(fdOut == -1) {
@@ -195,6 +191,7 @@ void loop() {
 
         else {                                              // parent process
             if(runInBg) {
+                pidListAdd(head, pid);
                 continue;
             }
 
@@ -203,10 +200,66 @@ void loop() {
             if(WIFSIGNALED(status)) {
                 status = WTERMSIG(status);
                 printf("terminated by signal %d\n", status);
+                fflush(stdout);
             }
             else if(WIFEXITED(status)) {
                 status = WEXITSTATUS(status);
             }
         }
+    }
+}
+
+void pidListAdd(struct pidNode *head, pid_t pid) {
+    struct pidNode *new = malloc(sizeof(struct pidNode));
+    new->pid = pid;
+    new->next = head;
+
+    head = new;
+}
+
+void checkBgProcesses(struct pidNode *head) {
+    struct pidNode *curr = head;
+    struct pidNode *prev = NULL;
+    int status;
+    while(curr != NULL) {
+        // wait for each process in list
+        pid_t pid = waitpid(curr->pid, &status, WNOHANG);
+
+        // continue if not done
+        if(pid == 0 || pid == -1) {
+            prev = curr;
+            curr = curr->next;
+            continue;
+        }
+
+        // check status
+        if(WIFSIGNALED(status)) {
+            status = WTERMSIG(status);
+            printf("background pid %d is done: terminated by signal %d\n", pid, status);
+            fflush(stdout);
+        }
+        else if(WIFEXITED(status)) {
+            status = WEXITSTATUS(status);
+            printf("background pid %d is done: exit value %d\n", pid, status);
+            fflush(stdout);
+        }
+
+        // delete from list
+        if(prev == NULL) head = curr->next;         // first node
+        else prev->next = curr->next;               // general node
+        free(curr);
+
+        prev = curr;
+        curr = curr->next;
+    }
+}
+
+void killBgProcesses(struct pidNode *head) {
+    struct pidNode *temp = head;
+    while(head != NULL) {
+        temp = temp->next;
+        kill(head->pid, SIGKILL);
+        free(head);
+        head = temp;
     }
 }
