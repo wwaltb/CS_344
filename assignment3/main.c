@@ -23,6 +23,8 @@ int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
 void pidListAdd(struct pidNode *head, pid_t pid);
+void checkBgProcesses(struct pidNode *head);
+void killBgProcesses(struct pidNode *head);
 
 int main() {
     int status = 0;
@@ -43,7 +45,7 @@ int main() {
         sigaction(SIGINT, &SIGINT_action, NULL);
 
         // check background processes:
-        // TODO
+        checkBgProcesses(head);
 
         // prompt user for input:
         printf(": ");
