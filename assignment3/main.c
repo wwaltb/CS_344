@@ -218,6 +218,7 @@ void pidListAdd(struct pidNode *head, pid_t pid) {
     new->next = head;
 
     head = new;
+    printf("added pid %d\n", head->pid);
 }
 
 void checkBgProcesses(struct pidNode *head) {
