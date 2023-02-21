@@ -259,7 +259,7 @@ void checkBgProcesses(struct pidNode *head) {
     }
 }
 
-void checkBgProcesseNS() {
+void checkBgProcessesNS() {
     pid_t pid;
     int status;
     do {
