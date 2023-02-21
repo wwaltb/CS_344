@@ -12,26 +12,16 @@
 #define MAX_CHAR 2048
 #define MAX_ARGS 512
 
-// structs:
-struct pidNode {
-    pid_t pid;
-    struct pidNode *next;
-};
-
 // globals:
 int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
-void pidListAdd(struct pidNode *head, pid_t pid);
-void checkBgProcesses(struct pidNode *head);
-void checkBgProcessesNS();
-void killBgProcesses(struct pidNode *head);
-void killBgProcessesNS();
+void checkBgProcesses();
+void killBgProcesses();
 
 int main() {
     int status = 0;
     char *devnull = "/dev/null";
-    struct pidNode *head = NULL;
 
     while(1) {
         char input[MAX_CHAR];
@@ -47,7 +37,7 @@ int main() {
         sigaction(SIGINT, &SIGINT_action, NULL);
 
         // check background processes:
-        checkBgProcessesNS();
+        checkBgProcesses();
 
         // prompt user for input:
         printf(": ");
@@ -111,7 +101,7 @@ int main() {
 
         // built in commands:
         if(strcmp(argv[0], "exit") == 0) {                  // exit command
-            killBgProcessesNS();
+            killBgProcesses();
             break;
         }
 
@@ -213,53 +203,7 @@ int main() {
     }
 }
 
-void pidListAdd(struct pidNode *head, pid_t pid) {
-    struct pidNode *new = malloc(sizeof(struct pidNode));
-    new->pid = pid;
-    new->next = head;
-
-    head = new;
-}
-
-void checkBgProcesses(struct pidNode *head) {
-    struct pidNode *curr = head;
-    struct pidNode *prev = NULL;
-    int status;
-    while(curr != NULL) {
-        printf("checking bg process %d\n", curr->pid);
-        // wait for each process in list
-        pid_t pid = waitpid(curr->pid, &status, WNOHANG);
-
-        // continue if not done
-        if(pid == 0 || pid == -1) {
-            prev = curr;
-            curr = curr->next;
-            continue;
-        }
-
-        // check status
-        if(WIFSIGNALED(status)) {
-            status = WTERMSIG(status);
-            printf("background pid %d is done: terminated by signal %d\n", pid, status);
-            fflush(stdout);
-        }
-        else if(WIFEXITED(status)) {
-            status = WEXITSTATUS(status);
-            printf("background pid %d is done: exit value %d\n", pid, status);
-            fflush(stdout);
-        }
-
-        // delete from list
-        if(prev == NULL) head = curr->next;         // first node
-        else prev->next = curr->next;               // general node
-        free(curr);
-
-        prev = curr;
-        curr = curr->next;
-    }
-}
-
-void checkBgProcessesNS() {
+void checkBgProcesses() {
     pid_t pid;
     int status;
     do {
@@ -277,23 +221,12 @@ void checkBgProcessesNS() {
     } while(pid != 0 && pid != -1);
 }
 
-void killBgProcesses(struct pidNode *head) {
-    struct pidNode *temp = head;
-    while(head != NULL) {
-        temp = temp->next;
-        kill(head->pid, SIGKILL);
-        free(head);
-        head = temp;
-    }
-}
-
-void killBgProcessesNS() {
+void killBgProcesses() {
     pid_t pgid = getpgid(0);
     kill(-pgid, SIGKILL);
 }
 
 // TODO:
-// try without keeping a list of processes
 // expand $$ variable
 // handle ctrl-z
 // fix status messages
