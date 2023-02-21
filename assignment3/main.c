@@ -83,14 +83,12 @@ int main() {
             if(strcmp(prevToken, "<") == 0) {               // input file
                 inputFile = token;
                 prevToken = token;
-                printf("inputFile: %s\n", inputFile);
                 continue;
             }
 
             if(strcmp(prevToken, ">") == 0) {               // output file
                 outputFile = token;
                 prevToken = token;
-                printf("outputFile: %s\n", outputFile);
                 continue;
             }
 
@@ -167,7 +165,8 @@ int main() {
             if(inputFile) {
                 fdIn = open(inputFile, O_RDONLY);
                 if(fdIn == -1) {
-                    perror("open");
+                    printf("cannot open %s for input\n", inputFile);
+                    fflush(stdout);
                     exit(1);
                 }
                 dup2(fdIn, STDIN_FILENO);
@@ -177,7 +176,8 @@ int main() {
             if(outputFile) {
                 fdOut = open(outputFile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
                 if(fdOut == -1) {
-                    perror("open");
+                    printf("cannot open or create %s for output\n", inputFile);
+                    fflush(stdout);
                     exit(1);
                 }
                 dup2(fdOut, STDOUT_FILENO);
@@ -186,14 +186,15 @@ int main() {
             status = execvp(argv[0], argv);
             if(status == -1) {
                 perror(argv[0]);
-                status = 1;
+                exit(1);
             }
-            exit(EXIT_FAILURE);
+            exit(0);
         }
 
         else {                                              // parent process
             if(runInBg) {
                 pidListAdd(head, pid);
+                printf("background pid is %d\n", pid);
                 continue;
             }
 
