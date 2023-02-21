@@ -169,7 +169,7 @@ int main() {
                 if(fdIn == -1) {
                     printf("cannot open %s for input\n", inputFile);
                     fflush(stdout);
-                    exit(1);
+                    exit(0);
                 }
                 dup2(fdIn, STDIN_FILENO);
             }
