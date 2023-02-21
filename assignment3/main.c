@@ -14,7 +14,7 @@
 
 // structs:
 struct pidNode {
-    pid_t *pid;
+    pid_t pid;
     struct pidNode *next;
 };
 
@@ -22,7 +22,7 @@ struct pidNode {
 int fgOnlyMode;         // 0 = false, 1 = true
 
 // forward declarations:
-void pidListAdd(struct pidNode *head, pid_t *pid);
+void pidListAdd(struct pidNode *head, pid_t pid);
 void checkBgProcesses(struct pidNode *head);
 void killBgProcesses(struct pidNode *head);
 
@@ -192,15 +192,12 @@ int main() {
         }
 
         else {                                              // parent process
-            // run command in background
             if(runInBg) {
-                pidListAdd(head, &pid);
-                printf("added pid %d\n", *(head->pid));
+                pidListAdd(head, pid);
+                printf("added pid %d\n", head->pid);
                 printf("background pid is %d\n", pid);
                 continue;
             }
-
-            // run command in foreground
 
             waitpid(pid, &status, 0);
 
@@ -216,7 +213,7 @@ int main() {
     }
 }
 
-void pidListAdd(struct pidNode *head, pid_t *pid) {
+void pidListAdd(struct pidNode *head, pid_t pid) {
     struct pidNode *new = malloc(sizeof(struct pidNode));
     new->pid = pid;
     new->next = head;
@@ -231,7 +228,7 @@ void checkBgProcesses(struct pidNode *head) {
     while(curr != NULL) {
         printf("checking bg process %d\n", curr->pid);
         // wait for each process in list
-        pid_t pid = waitpid(*(curr->pid), &status, WNOHANG);
+        pid_t pid = waitpid(curr->pid, &status, WNOHANG);
 
         // continue if not done
         if(pid == 0 || pid == -1) {
@@ -266,8 +263,14 @@ void killBgProcesses(struct pidNode *head) {
     struct pidNode *temp = head;
     while(head != NULL) {
         temp = temp->next;
-        kill(*(head->pid), SIGKILL);
+        kill(head->pid, SIGKILL);
         free(head);
         head = temp;
     }
 }
+
+// TODO:
+// try without keeping a list of processes
+// expand $$ variable
+// handle ctrl-z
+// fix status messages
