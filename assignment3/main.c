@@ -182,6 +182,7 @@ int main() {
                     exit(1);
                 }
                 dup2(fdIn, STDIN_FILENO);
+                close(fdIn);
             }
 
             // redirect output
@@ -193,6 +194,7 @@ int main() {
                     exit(1);
                 }
                 dup2(fdOut, STDOUT_FILENO);
+                close(fdOut);
             }
 
             status = execvp(argv[0], argv);
@@ -248,6 +250,8 @@ void checkBgProcesses() {
 
 void killBgProcesses() {
     pid_t pgid = getpgid(0);
+    int fd = open("/dev/null", O_RDWR);
+    dup2(fd, STDOUT_FILENO);
     kill(-pgid, SIGKILL);
 }
 
