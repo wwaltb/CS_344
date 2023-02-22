@@ -295,7 +295,10 @@ void toggleFgOnlyMode() {
 
 void handleSigtstp(int signo) {
     if(waiting) sigtstpFlag = 1;
-    else toggleFgOnlyMode();
+    else {
+        toggleFgOnlyMode();
+        write(STDOUT_FILENO, ": ", strlen(": "));
+    }
 }
 
 // TODO:
