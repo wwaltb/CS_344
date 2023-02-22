@@ -239,7 +239,7 @@ char* expand$$(char *string) {
     char pidStr[pidLen + 1];
     sprintf(pidStr, pidLen + 1, "%d", pid);
 
-    char expandedString[strlen(string) * 2];
+    char *expandedString = malloc(strlen(string) * 2);
 
     while(i < strlen(string)) {
         if(string[i] == '$' && string[i+1] == '$') {
