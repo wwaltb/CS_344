@@ -55,7 +55,7 @@ int main() {
 
         // expand variable '$$'
         memset(command, '\0', strlen(command));
-        strncpy(command, expand$$(input), strlen(expand$$(input)));
+        command = expand$$(input);
 
         // check for any non-whitespace chars
         char *token = NULL;
