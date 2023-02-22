@@ -237,7 +237,7 @@ char* expand$$(char *string) {
     pid_t pid = getpid();
     int pidLen = snprintf(NULL, 0, "%d", pid);
     char pidStr[pidLen + 1];
-    sprintf(pidStr, pidLen + 1, "%d", pid);
+    snprintf(pidStr, pidLen + 1, "%d", pid);
 
     char *expandedString = malloc(strlen(string) * 2);
 
