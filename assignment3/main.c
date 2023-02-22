@@ -18,17 +18,19 @@ int fgOnlyMode;         // 0 = false, 1 = true
 // forward declarations:
 void checkBgProcesses();
 void killBgProcesses();
+char* expand$$();
 
 int main() {
     int status = 0;
     char *devnull = "/dev/null";
 
     while(1) {
-        char input[MAX_CHAR];
-        char *argv[MAX_ARGS];
-        int argc = 0;
-        char *inputFile = NULL;
-        char *outputFile = NULL;
+        char input[MAX_CHAR];           // the input string
+        char command[MAX_CHAR * 2];     // the command after var '$$' expansion
+        char *argv[MAX_ARGS];           // list of arguments
+        int argc = 0;                   // number of arguments
+        char *inputFile = NULL;         // file to redirect input
+        char *outputFile = NULL;        // file to redirect output
         int runInBg = 0;
 
         // ignore SIGINT:
@@ -52,7 +54,8 @@ int main() {
         input[strcspn(input, "\n")] = 0;
 
         // expand variable '$$'
-        // TODO
+        strcpy(command, expand$$(input));
+        printf("%s", command);
 
         // check for any non-whitespace chars
         char *token = NULL;
@@ -122,10 +125,10 @@ int main() {
         }
 
         if(strcmp(argv[0], "status") == 0) {                // status command
-            if (WIFEXITED(status)){
+            if (WIFEXITED(status)) {
 				printf("exit value %d\n", WEXITSTATUS(status));
 			}
-			else if (WIFSIGNALED(status)){
+			else if (WIFSIGNALED(status)) {
 				printf("terminated by signal %d\n", WTERMSIG(status));
 			}
             fflush(stdout);
@@ -159,7 +162,7 @@ int main() {
                 if(fdIn == -1) {
                     printf("cannot open %s for input\n", inputFile);
                     fflush(stdout);
-                    exit(0);
+                    exit(1);
                 }
                 dup2(fdIn, STDIN_FILENO);
             }
@@ -208,7 +211,7 @@ void checkBgProcesses() {
     int status;
     do {
         pid = waitpid(-1, &status, WNOHANG);
-        if(pid <= 0) continue;
+        if(pid == 0 || pid == -1) continue;
         // child process has exited:
         if(WIFEXITED(status)) {
             printf("background pid %d is done: exit value %d\n", pid, WEXITSTATUS(status));
@@ -224,6 +227,36 @@ void checkBgProcesses() {
 void killBgProcesses() {
     pid_t pgid = getpgid(0);
     kill(-pgid, SIGKILL);
+}
+
+char* expand$$(char *string) {
+    int i = 0;
+    int j = 0;
+
+    // make a string containing the process id:
+    pid_t pid = getpid();
+    int pidLen = snprintf(NULL, 0, "%d", pid);
+    char pidStr[pidLen + 1];
+    sprintf(pidStr, pidLen + 1, "%d", pid);
+
+    char expandedString[strlen(string) * 2];
+
+    while(i < strlen(string)) {
+        if(string[i] == '$' && string[i+1] == '$') {
+            // replace "$$" with pid
+            strncpy(&expandedString[j], pidStr, pidLen);
+            i += 2;
+            j += pidLen;
+        }
+        else {
+            // add current char
+            expandedString[j] = string[i];
+            i++;
+            j++;
+        }
+    }
+
+    return expandedString;
 }
 
 // TODO:
