@@ -54,7 +54,8 @@ int main() {
         input[strcspn(input, "\n")] = 0;
 
         // expand variable '$$'
-        strcpy(command, expand$$(input));
+        strncpy(command, expand$$(input), strlen(expand$$(input)));
+        printf("command: %s\n", command);
 
         // check for any non-whitespace chars
         char *token = NULL;
