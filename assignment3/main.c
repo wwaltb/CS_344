@@ -45,7 +45,7 @@ int main() {
         printf(": ");
 		fflush(stdout);
 		fflush(stdin);
-        memset(input, '\0', MAX_CHAR);
+        memset(input, '\0', strlen(input));
 		fgets(input, MAX_CHAR, stdin);
 
         if(input[0] == '#') continue;                       // continue if comment
@@ -54,6 +54,7 @@ int main() {
         input[strcspn(input, "\n")] = 0;
 
         // expand variable '$$'
+        memset(command, '\0', strlen(input));
         strncpy(command, expand$$(input), strlen(expand$$(input)));
 
         // check for any non-whitespace chars
