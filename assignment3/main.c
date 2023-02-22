@@ -14,11 +14,15 @@
 
 // globals:
 int fgOnlyMode;         // 0 = false, 1 = true
+int sigtstpFlag;        // 0 = false, 1 = true
+int waiting;            // 0 = false, 1 = true
 
 // forward declarations:
 void checkBgProcesses();
 void killBgProcesses();
-char* expand$$(char*);
+char* expand(char*);
+void toggleFgOnlyMode();
+void handleSigtstp(int);
 
 int main() {
     int status = 0;
@@ -38,6 +42,13 @@ int main() {
         SIGINT_action.sa_handler = SIG_IGN;
         sigaction(SIGINT, &SIGINT_action, NULL);
 
+        // handle SIGTSTP:
+        struct sigaction SIGTSTP_action = {0};
+        SIGTSTP_action.sa_handler = handleSigtstp;
+        sigfillset(&SIGTSTP_action.sa_mask);
+        SIGTSTP_action.sa_flags = SA_RESTART;
+        sigaction(SIGTSTP, &SIGTSTP_action, NULL);
+
         // check background processes:
         checkBgProcesses();
 
@@ -55,7 +66,7 @@ int main() {
 
         // expand variable '$$'
         memset(command, '\0', MAX_CHAR * 2);
-        strncpy(command, expand$$(input), strlen(expand$$(input)));
+        strncpy(command, expand(input), strlen(expand(input)));
 
         // check for any non-whitespace chars
         char *token = NULL;
@@ -152,6 +163,11 @@ int main() {
                 sigaction(SIGINT, &SIGINT_action, NULL);
             }
 
+            // ignore SIGTSTP in any child process
+            SIGTSTP_action.sa_handler = SIG_IGN;
+            SIGTSTP_action.sa_flags = 0;
+            sigaction(SIGTSTP, &SIGTSTP_action, NULL);
+
             // set background redirects if not specified
             if(runInBg && !inputFile) inputFile = devnull;
             if(runInBg && !outputFile) outputFile = devnull;
@@ -192,7 +208,16 @@ int main() {
                 continue;
             }
 
+            sigtstpFlag = 0;
+            waiting = 1;
+
             waitpid(pid, &status, 0);
+
+            waiting = 0;
+            if(sigtstpFlag) {
+                sigtstpFlag = 0;
+                toggleFgOnlyMode();
+            }
 
             if(WIFSIGNALED(status)) {
                 printf("terminated by signal %d\n", WTERMSIG(status));
@@ -225,7 +250,7 @@ void killBgProcesses() {
     kill(-pgid, SIGKILL);
 }
 
-char* expand$$(char *string) {
+char* expand(char *string) {
     int i = 0;
     int j = 0;
 
@@ -253,6 +278,24 @@ char* expand$$(char *string) {
     }
 
     return expandedString;
+}
+
+void toggleFgOnlyMode() {
+    if(fgOnlyMode) {
+        fgOnlyMode = 0;
+        char *message = "\nExiting foreground-only mode\n";
+        write(STDOUT_FILENO, message, strlen(message));
+    }
+    else {
+        fgOnlyMode = 1;
+        char *message = "\nEntering foreground-only mode (& is now ignored)\n";
+        write(STDOUT_FILENO, message, strlen(message));
+    }
+}
+
+void handleSigtstp(int signo) {
+    if(waiting) sigtstpFlag = 1;
+    else toggleFgOnlyMode();
 }
 
 // TODO:
