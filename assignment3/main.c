@@ -56,7 +56,6 @@ int main() {
         // expand variable '$$'
         memset(command, '\0', MAX_CHAR * 2);
         strncpy(command, expand$$(input), strlen(expand$$(input)));
-        printf("command: %s\n", command);
 
         // check for any non-whitespace chars
         char *token = NULL;
@@ -252,9 +251,6 @@ char* expand$$(char *string) {
             j++;
         }
     }
-
-    printf("original string: %s\n", string);
-    printf("expanded string: %s\n", expandedString);
 
     return expandedString;
 }
