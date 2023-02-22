@@ -26,7 +26,7 @@ int main() {
 
     while(1) {
         char input[MAX_CHAR];           // the input string
-        char command[MAX_CHAR * 2];     // the command after var '$$' expansion
+        char *command;     // the command after var '$$' expansion
         char *argv[MAX_ARGS];           // list of arguments
         int argc = 0;                   // number of arguments
         char *inputFile = NULL;         // file to redirect input
@@ -54,7 +54,7 @@ int main() {
         input[strcspn(input, "\n")] = 0;
 
         // expand variable '$$'
-        memset(command, '\0', strlen(input));
+        memset(command, '\0', strlen(command));
         strncpy(command, expand$$(input), strlen(expand$$(input)));
 
         // check for any non-whitespace chars
@@ -99,6 +99,7 @@ int main() {
             prevToken = token;                              // store token for next iteration
         }
         argv[argc] = NULL;          // null terminate argv
+        free(command);
 
         // run command:
 
@@ -199,7 +200,7 @@ int main() {
                 fflush(stdout);
             }
         }
-    }
+    } // end while
 }
 
 void checkBgProcesses() {
