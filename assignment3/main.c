@@ -18,7 +18,7 @@ int fgOnlyMode;         // 0 = false, 1 = true
 // forward declarations:
 void checkBgProcesses();
 void killBgProcesses();
-char* expand$$();
+char* expand$$(char*);
 
 int main() {
     int status = 0;
@@ -55,11 +55,10 @@ int main() {
 
         // expand variable '$$'
         strncpy(command, expand$$(input), strlen(expand$$(input)));
-        printf("command: %s\n", command);
 
         // check for any non-whitespace chars
         char *token = NULL;
-        if(!(token = strtok(input, " \n"))) continue;       // continue if blank line
+        if(!(token = strtok(command, " \n"))) continue;     // continue if blank line
 
         argv[0] = token;
         argc++;
@@ -195,12 +194,8 @@ int main() {
             waitpid(pid, &status, 0);
 
             if(WIFSIGNALED(status)) {
-                status = WTERMSIG(status);
-                printf("terminated by signal %d\n", status);
+                printf("terminated by signal %d\n", WTERMSIG(status));
                 fflush(stdout);
-            }
-            else if(WIFEXITED(status)) {
-                status = WEXITSTATUS(status);
             }
         }
     }
@@ -256,13 +251,9 @@ char* expand$$(char *string) {
         }
     }
 
-    printf("original string: %s\n", string);
-    printf("expanded string: %s\n", expandedString);
-
     return expandedString;
 }
 
 // TODO:
-// expand $$ variable
 // handle ctrl-z
 // fix status messages
