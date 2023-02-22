@@ -99,7 +99,6 @@ int main() {
             prevToken = token;                              // store token for next iteration
         }
         argv[argc] = NULL;          // null terminate argv
-        free(command);
 
         // run command:
 
