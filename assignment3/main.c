@@ -250,8 +250,6 @@ void checkBgProcesses() {
 
 void killBgProcesses() {
     pid_t pgid = getpgid(0);
-    int fd = open("/dev/null", O_RDWR);
-    dup2(fd, STDOUT_FILENO);
     kill(-pgid, SIGKILL);
 }
 
