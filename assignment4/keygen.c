@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include "cipher.h"
 
 int main(int argc, char **argv) {
     // check number of arguments
@@ -22,8 +23,7 @@ int main(int argc, char **argv) {
     // generate random key and output to stdout
     int i;
     for(i = 0; i < atoi(argv[1]); i++) {
-        int r = rand() % 27;
-        char c = (r == 26) ? 32 : r + 65;
+        char c = toChar(rand() % 27);
         printf("%c", c);
     }
     printf("\n");
