@@ -20,7 +20,8 @@ int main(int argc, char **argv) {
     srand((unsigned) time(&t));
     
     // generate random key and output to stdout
-    for(int i = 0; i < atoi(argv[1]); i++) {
+    int i;
+    for(i = 0; i < atoi(argv[1]); i++) {
         int r = rand() % 27;
         char c = (r == 26) ? 32 : r + 65;
         printf("%c", c);
