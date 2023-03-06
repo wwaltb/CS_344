@@ -22,10 +22,10 @@ char toChar(int num) {
 }
 
 /*
- * convert an integer to a char
- * @num: integer to convert (must be in range [0, 26])
+ * convert a char to an integer
+ * @c: char to convert (must be either a space (' ') or in the range [A,Z])
  *
- * Return: char that is either a space (' ') or in the range [A,Z]
+ * Return: int that is in range [0, 26]
  */
 int toInt(char c) {
     if(c == 32) return 26;
