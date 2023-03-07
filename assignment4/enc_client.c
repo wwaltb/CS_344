@@ -35,6 +35,9 @@ int main(int argc, char *argv[]) {
         error("enc_client: ERROR key is too short", 1);
     }
     
+    printf("plainTextLen: %d\n", plainTextLen);
+    printf("keyTextLen: %d\n", keyTextLen);
+
     printf("plaintext: %s\n", plainText);
     printf("key: %s\n", keyText);
 

@@ -54,7 +54,7 @@ int processFile(const char *filename, char content[]) {
         printf("currChar: %c\n", currChar);
 
         if (currChar == EOF || currChar == '\n') {
-            printf("Found EOF or \\n");
+            printf("Found EOF or \\n\n");
             break;
         }
 
