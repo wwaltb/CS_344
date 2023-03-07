@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     printf("plainTextLen: %da\n", plainTextLen);
     printf("keyTextLen: %d\n", keyTextLen);
 
-    printf("plaintext: %s\n", plainText);
+    printf("plaintext: %sa\n", plainText);
     printf("key: %s\n", keyText);
 
     // Close the socket
