@@ -32,15 +32,14 @@ int main(int argc, char *argv[]) {
     int keyTextLen = processFile(argv[2], keyText);
 
     if (keyTextLen < plainTextLen) {
-        fprintf(stderr, "enc_client: ERROR key is too short");
+        fprintf(stderr, "enc_client: ERROR key is too short\n");
         exit(1);
     }
     
-    printf("plainTextLen: %da\n", plainTextLen);
-    printf("keyTextLen: %d\n", keyTextLen);
+    char authCode[10];
+    receive(authCode, socketFD);
 
-    printf("plaintext: %sa\n", plainText);
-    printf("key: %s\n", keyText);
+    printf("auth code: %s\n", authCode);
 
     // Close the socket
     close(socketFD);

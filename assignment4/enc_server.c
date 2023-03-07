@@ -63,6 +63,8 @@ int main(int argc, char *argv[]){
             if (charsRead < 0) {
                 perror("enc_server: ERROR writing to socket");
             }
+            sendAll(authCode, connectionSocket);
+            sendAll("@exit", connectionSocket);
 
             // receive plaintext
             receive(plainText, connectionSocket);
@@ -74,6 +76,7 @@ int main(int argc, char *argv[]){
             encode(plainText, keyText, cipherText);
 
             sendAll(cipherText, connectionSocket);
+            sendAll("@exit", connectionSocket);
         }
         // parent process
         else {

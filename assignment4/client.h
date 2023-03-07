@@ -51,7 +51,6 @@ int processFile(const char *filename, char content[]) {
 
     while(1) {
         currChar = fgetc(file);
-        printf("currChar: %c\n", currChar);
 
         if (currChar == EOF || currChar == '\n') {
             break;
@@ -68,4 +67,65 @@ int processFile(const char *filename, char content[]) {
     fclose(file);
 
     return charsRead;
+}
+
+/*
+ * receives data from a client
+ * @string: string buffer to store the data
+ * @socket: socket fd to receive data from
+ *
+ * Return: 0 on success, -1 on failure
+ */
+int receive(char *string, int socket) {
+    memset(string, '\0', sizeof(string));
+
+    char buffer[256];
+    int charsRead;
+
+    while(1) {
+        memset(buffer, '\0', 256);
+        charsRead = recv(socket, buffer, 255, 0);
+
+        // handle recv error
+        if (charsRead < 0) {
+            error("ERROR reading from socket", 1);
+            break;
+        }
+
+        // check if end of data from client
+        if (strcmp(buffer, "@exit") == 0) {
+            break;
+        }
+
+        // append data to string
+        strcat(string, buffer);
+    }
+
+    // return 0 on success, -1 if error
+    return charsRead < 0 ? -1 : 0;
+}
+
+/*
+ * sends data to a client
+ * @string: string to send
+ * @socket: socket fd to send data to
+ *
+ * Return: # of chars sent on success, -1 on failure
+ */
+int sendAll(char *string, int socket) {
+    int charsSent = 0, charsLeft = strlen(string), n;
+
+    while(charsSent < strlen(string)) {
+        n = send(socket, string + charsSent, charsLeft, 0);
+        if (n < 0) {
+            perror("ERROR writing to socket");
+            break;
+        }
+
+        charsSent += n;
+        charsLeft -= n;
+    }
+
+    // return charsSent on success, -1 if error
+    return n < 0 ? -1 : charsSent;
 }
