@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    printf("plainTextLen: %d\n", plainTextLen);
+    printf("plainTextLen: %da\n", plainTextLen);
     printf("keyTextLen: %d\n", keyTextLen);
 
     printf("plaintext: %s\n", plainText);
