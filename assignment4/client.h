@@ -92,8 +92,6 @@ int receive(char *string, int socket) {
             break;
         }
 
-        printf("%s\n", buffer);
-
         // check if end of data from client
         if (strcmp(buffer, "@exit") == 0) {
             break;
