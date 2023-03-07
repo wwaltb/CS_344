@@ -59,10 +59,6 @@ int main(int argc, char *argv[]){
 
             // send authentication
             char authCode[] = "enc_server";
-            charsSent = send(connectionSocket, authCode, sizeof(authCode), 0);
-            if (charsRead < 0) {
-                perror("enc_server: ERROR writing to socket");
-            }
             sendAll(authCode, connectionSocket);
             sendAll("@exit", connectionSocket);
 
