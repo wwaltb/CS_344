@@ -100,7 +100,7 @@ int receive(char *string, int socket) {
         // append data to string
         strcat(string, buffer);
 
-        send(socket, "received", strlen("received"), 0);
+        //send(socket, "received", strlen("received"), 0);
     }
 
     // return 0 on success, -1 if error
