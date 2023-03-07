@@ -47,14 +47,13 @@ int processFile(const char *filename, char content[]) {
     memset(content, '\0', sizeof(content));
 
     char currChar;
-    int charsRead;
+    int charsRead = 0;
 
     while(1) {
         currChar = fgetc(file);
         printf("currChar: %c\n", currChar);
 
         if (currChar == EOF || currChar == '\n') {
-            printf("Found EOF or \\n\n");
             break;
         }
 
