@@ -60,7 +60,7 @@ int processFile(const char *filename, char *content) {
             error("enc_client: ERROR input contains invalid characters", 1);
         }
 
-        strcat(content, currChar);
+        content[charsRead] = currChar;
         charsRead++;
     }
 
