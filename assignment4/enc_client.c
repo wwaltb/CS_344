@@ -32,7 +32,8 @@ int main(int argc, char *argv[]) {
     int keyTextLen = processFile(argv[2], keyText);
 
     if (keyTextLen < plainTextLen) {
-        error("enc_client: ERROR key is too short", 1);
+        fprintf(stderr, "enc_client: ERROR key is too short");
+        exit(1);
     }
     
     printf("plainTextLen: %d\n", plainTextLen);
