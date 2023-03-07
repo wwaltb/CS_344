@@ -51,6 +51,7 @@ int processFile(const char *filename, char *content) {
 
     while(1) {
         currChar = fgetc(file);
+        printf("currChar: %c\n", currChar);
 
         if (currChar == EOF || currChar == '\n') {
             break;
