@@ -38,7 +38,7 @@ void setupAddressStruct(struct sockaddr_in* address,
         hostInfo->h_length);
 }
 
-int processFile(const char *filename, char *content) {
+int processFile(const char *filename, char content[]) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         error("enc_client: ERROR opening input files", 1);
