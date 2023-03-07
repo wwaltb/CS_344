@@ -128,6 +128,8 @@ int sendAll(char *string, int socket) {
 
         charsSent += n;
         charsLeft -= n;
+
+        recv(socket, string, 0, 0);
     }
 
     // return charsSent on success, -1 if error
