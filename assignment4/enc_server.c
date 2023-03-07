@@ -75,6 +75,7 @@ int main(int argc, char *argv[]){
             // encode plaintext
             encode(plainText, keyText, cipherText);
 
+            // send ciphertext
             sendAll(cipherText, connectionSocket);
             sendAll("@exit", connectionSocket);
         }

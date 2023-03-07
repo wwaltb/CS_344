@@ -36,10 +36,28 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
+    // authenticate with enc_server
     char authCode[10];
     receive(authCode, socketFD);
 
-    printf("auth code: %s\n", authCode);
+    if (strcmp(authCode, "enc_server") != 0) {
+        fprintf(stderr, "enc_client: cannot connect to server other than enc_server\n");
+        fprintf(stderr, "enc_client: could not contact enc_server on port %d", atoi(argv[3]));
+        exit(2);
+    }
+
+    // send plaintext
+    sendAll(plainText, socketFD);
+    sendAll("@exit", socketFD);
+
+    // send key
+    sendAll(keyText, socketFD);
+    sendAll("@exit", socketFD);
+
+    // receive ciphertext
+    receive(cipherText, socketFD);
+
+    printf("%s\n", cipherText);
 
     // Close the socket
     close(socketFD);
