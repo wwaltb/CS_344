@@ -64,9 +64,11 @@ int main(int argc, char *argv[]){
 
             // receive plaintext
             receive(plainText, connectionSocket);
+            printf("server received plaintext: %s\n", plainText);
 
             // receive key
             receive(keyText, connectionSocket);
+            printf("server received key: %s\n", keyText);
 
             // encode plaintext
             encode(plainText, keyText, cipherText);

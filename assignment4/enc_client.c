@@ -20,14 +20,15 @@ int main(int argc, char *argv[]) {
 
     // Connect to server
     if (connect(socketFD, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0) {
-        error("enc_client: ERROR connecting", 1);
+        fprintf(stderr, "enc_client: could not contact enc_server on port %d", atoi(argv[3]));
+        exit(2);
     }
 
-    // create file pointers and open plaintext and key
     char plainText[200000];
     char keyText[200000];
     char cipherText[200000];
 
+    // get file lengths and check their contents
     int plainTextLen = processFile(argv[1], plainText);
     int keyTextLen = processFile(argv[2], keyText);
 
