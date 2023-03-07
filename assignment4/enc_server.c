@@ -1,58 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-
-// Error function used for reporting issues
-void error(const char *msg) {
-    perror(msg);
-    exit(1);
-} 
-
-// Set up the address struct for the server socket
-void setupAddressStruct(struct sockaddr_in* address, int portNumber) {
- 
-    // Clear out the address struct
-    memset((char*) address, '\0', sizeof(*address)); 
-
-    // The address should be network capable
-    address->sin_family = AF_INET;
-    // Store the port number
-    address->sin_port = htons(portNumber);
-    // Allow a client at any address to connect to this server
-    address->sin_addr.s_addr = INADDR_ANY;
-}
+#include "server.h"
+#include "cipher.h"
 
 int main(int argc, char *argv[]){
-    int connectionSocket, charsRead;
-    char buffer[256];
-    struct sockaddr_in serverAddress, clientAddress;
-    socklen_t sizeOfClientInfo = sizeof(clientAddress);
+    struct sockaddr_in serverAddress;
 
     // Check usage & args
     if (argc < 2) { 
-    fprintf(stderr,"USAGE: %s port\n", argv[0]); 
-    exit(1);
+        fprintf(stderr,"USAGE: %s port\n", argv[0]); 
+        exit(1);
     } 
 
     // Create the socket that will listen for connections
     int listenSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (listenSocket < 0) {
-        error("ERROR opening socket");
+        error("enc_server: ERROR opening socket", 1);
     }
 
     // Set up the address struct for the server socket
     setupAddressStruct(&serverAddress, atoi(argv[1]));
 
     // Associate the socket to the port
-    if (bind(listenSocket, 
-            (struct sockaddr *) &serverAddress, 
-            sizeof(serverAddress)) < 0) 
-    {
-    error("ERROR on binding");
+    if (bind(listenSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
+        error("enc_server: ERROR on binding", 1);
     }
 
     // Start listening for connetions. Allow up to 5 connections to queue up
@@ -60,33 +29,61 @@ int main(int argc, char *argv[]){
 
     // Accept a connection, blocking if one is not available until one connects
     while(1) {
-    // Accept the connection request which creates a connection socket
-    connectionSocket = accept(listenSocket, (struct sockaddr *) &clientAddress, &sizeOfClientInfo); 
-    if (connectionSocket < 0){
-        error("ERROR on accept");
+        int connectionSocket;
+        struct sockaddr_in clientAddress;
+        socklen_t sizeOfClientInfo = sizeof(clientAddress);
+
+        // Accept the connection request which creates a connection socket
+        connectionSocket = accept(listenSocket, (struct sockaddr *) &clientAddress, &sizeOfClientInfo); 
+        if (connectionSocket < 0) {
+            perror("enc_server: ERROR on accept");
+        }
+
+        printf("enc_server: Connected to client running at host %d port %d\n", 
+                                ntohs(clientAddress.sin_addr.s_addr),
+                                ntohs(clientAddress.sin_port));
+
+        // service client in a childe process
+        pid_t pid = fork();
+
+        // error handling for fork()
+        if (pid < 0) {
+            perror("enc_server: ERROR on fork");
+        }
+        // child process
+        else if (pid == 0) {
+            int charsRead, charsSent;
+            char plainText[200000];
+            char keyText[200000];
+            char cipherText[200000];
+
+            // send authentication
+            char authCode[] = "enc_server";
+            charsSent = send(connectionSocket, authCode, sizeof(authCode), 0);
+            if (charsRead < 0) {
+                perror("enc_server: ERROR writing to socket");
+            }
+
+            // receive plaintext
+            receive(plainText, connectionSocket);
+
+            // receive key
+            receive(keyText, connectionSocket);
+
+            // encode plaintext
+            encode(plainText, keyText, cipherText);
+
+            sendAll(cipherText, connectionSocket);
+        }
+        // parent process
+        else {
+
+        }
+
+        // Close the connection socket for this client
+        close(connectionSocket);
     }
 
-    printf("SERVER: Connected to client running at host %d port %d\n", 
-                            ntohs(clientAddress.sin_addr.s_addr),
-                            ntohs(clientAddress.sin_port));
-
-    // Get the message from the client and display it
-    memset(buffer, '\0', 256);
-    // Read the client's message from the socket
-    charsRead = recv(connectionSocket, buffer, 255, 0); 
-    if (charsRead < 0) {
-        error("ERROR reading from socket");
-    }
-    printf("SERVER: I received this from the client: \"%s\"\n", buffer);
-
-    // Send a Success message back to the client
-    charsRead = send(connectionSocket, "I am the server, and I got your message", 39, 0); 
-    if (charsRead < 0) {
-        error("ERROR writing to socket");
-    }
-    // Close the connection socket for this client
-    close(connectionSocket); 
-    }
     // Close the listening socket
     close(listenSocket); 
     return 0;

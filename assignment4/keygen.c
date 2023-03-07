@@ -6,13 +6,13 @@
 int main(int argc, char **argv) {
     // check number of arguments
     if(argc != 2) {
-        fprintf(stderr, "usage: keygen Keylength\n");
+        fprintf(stderr, "USAGE: %s Keylength\n", argv[0]);
         return 1;
     }
 
     // check that keylength is an integer
     if(!atoi(argv[1])) {
-        fprintf(stderr, "usage: keygen Keylength\n");
+        fprintf(stderr, "USAGE: %s Keylength\n", argv[0]);
         return 1;
     }
 

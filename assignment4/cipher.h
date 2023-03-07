@@ -1,3 +1,5 @@
+#include <string.h>
+
 /*
  * brief_description_of_function - function's purpose
  * @param1: description of first input parameter
@@ -30,4 +32,20 @@ char toChar(int num) {
 int toInt(char c) {
     if(c == 32) return 26;
     return c - 65;
+}
+
+/*
+ * encodes plaintext into ciphertext using the given key
+ * @plainText: string of plaintext to encode
+ * @keyText: string of cipher key
+ * @cipherText: output string for encoded plaintext
+ */
+void encode(char *plainText, char *keyText, char *cipherText) {
+    memset(cipherText, '\0', sizeof(cipherText));
+
+    int i;
+    for(int i = 0; plainText[i] != '\0'; i++) {
+        int applyKey = (toInt(plainText[i]) + toInt(keyText[i])) % 27;
+        cipherText[i] = toChar(applyKey);
+    }
 }
