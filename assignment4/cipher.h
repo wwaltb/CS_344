@@ -44,7 +44,7 @@ void encode(char *plainText, char *keyText, char *cipherText) {
     memset(cipherText, '\0', sizeof(cipherText));
 
     int i;
-    for(int i = 0; plainText[i] != '\0'; i++) {
+    for(i = 0; plainText[i] != '\0'; i++) {
         int applyKey = (toInt(plainText[i]) + toInt(keyText[i])) % 27;
         cipherText[i] = toChar(applyKey);
     }
