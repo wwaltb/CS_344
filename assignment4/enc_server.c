@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
             // send authentication
             char authCode[] = "enc_server";
             sendAll(authCode, connectionSocket);
-            sendAll("@exit", connectionSocket);
+            sendAll("@@", connectionSocket);
 
             // receive plaintext
             receive(plainText, connectionSocket);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
 
             // send ciphertext
             sendAll(cipherText, connectionSocket);
-            sendAll("@exit", connectionSocket);
+            sendAll("@@", connectionSocket);
         }
         // parent process
         else {

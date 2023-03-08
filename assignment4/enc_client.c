@@ -49,11 +49,11 @@ int main(int argc, char *argv[]) {
 
     // send plaintext
     sendAll(plainText, socketFD);
-    sendAll("@exit", socketFD);
+    sendAll("@@", socketFD);
 
     // send key
     sendAll(keyText, socketFD);
-    sendAll("@exit", socketFD);
+    sendAll("@@", socketFD);
 
     // receive ciphertext
     receive(cipherText, socketFD);

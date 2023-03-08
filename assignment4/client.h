@@ -93,14 +93,12 @@ int receive(char *string, int socket) {
         }
 
         // check if end of data from client
-        if (strcmp(buffer, "@exit") == 0) {
+        if (strcmp(buffer, "@@") == 0) {
             break;
         }
 
         // append data to string
         strcat(string, buffer);
-
-        send(socket, "", strlen(""), 0);
     }
 
     // return 0 on success, -1 if error
@@ -126,8 +124,6 @@ int sendAll(char *string, int socket) {
 
         charsSent += n;
         charsLeft -= n;
-
-        recv(socket, string, 0, 0);
     }
 
     // return charsSent on success, -1 if error
