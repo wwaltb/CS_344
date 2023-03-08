@@ -82,7 +82,8 @@ int receive(char *string, int socket) {
     char buffer[256];
     int charsRead;
 
-    while(1) {
+    int done = 0;
+    while(!done) {
         memset(buffer, '\0', 256);
         charsRead = recv(socket, buffer, 255, 0);
 
@@ -92,12 +93,16 @@ int receive(char *string, int socket) {
             break;
         }
 
-        printf("SERVER received buffer: %s\n", buffer);
+        printf("CLIENT received buffer: %s\n", buffer);
 
 
-        // check if end of data from client
-        if (strcmp(buffer, "@@") == 0) {
-            break;
+        int len = strlen(buffer);
+        // check for terminating chars
+        if (len > 1 && buffer[len - 1] == '@' && buffer[len - 2] == '@') {
+            // remove if found and set done
+            buffer[len - 1] = '\0';
+            buffer[len - 2] = '\0';
+            done = 1;
         }
 
         // append data to string
