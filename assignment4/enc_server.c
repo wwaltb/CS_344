@@ -58,13 +58,17 @@ int main(int argc, char *argv[]){
             char cipherText[200000];
 
             // send authentication
-            char authCode[] = "enc_server";
-            sendAll(authCode, connectionSocket);
-            sendAll("@@", connectionSocket);
+            sendAll("enc_server@@", connectionSocket);
+
+            // request plaintext
+            sendAll("plaintext@@", connectionSocket);
 
             // receive plaintext
             receive(plainText, connectionSocket);
             printf("server received plaintext: %s\n", plainText);
+
+            // request key
+            sendAll("key@@", connectionSocket);
 
             // receive key
             receive(keyText, connectionSocket);
