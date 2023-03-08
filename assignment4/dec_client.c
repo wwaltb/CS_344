@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
     }
 
     // send ciphertext
-    sendAll(plainText, socketFD);
+    sendAll(cipherText, socketFD);
     sendAll("@@", socketFD);
 
     // receive key request
