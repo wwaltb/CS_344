@@ -44,9 +44,12 @@ int main(int argc, char *argv[]) {
 
     if (strcmp(buffer, "enc_server") != 0) {
         fprintf(stderr, "enc_client: cannot connect to server other than enc_server\n");
-        fprintf(stderr, "enc_client: could not contact enc_server on port %d", atoi(argv[3]));
+        fprintf(stderr, "enc_client: could not contact enc_server on port %d\n", atoi(argv[3]));
         exit(2);
     }
+
+    // send hello to enc_server
+    sendAll("hello enc_server@@", socketFD);
 
     // receive plaintext request
     receive(buffer, socketFD);

@@ -56,9 +56,13 @@ int main(int argc, char *argv[]){
             char plainText[200000];
             char keyText[200000];
             char cipherText[200000];
+            char buffer[256];
 
             // send authentication
             sendAll("enc_server@@", connectionSocket);
+
+            // receive hello from client
+            receive(buffer, connectionSocket);
 
             // request plaintext
             sendAll("plaintext@@", connectionSocket);
