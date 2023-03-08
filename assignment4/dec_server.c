@@ -76,10 +76,10 @@ int main(int argc, char *argv[]){
 
             // receive key
             receive(keyText, connectionSocket);
-            printf("SERVER received key: %s\n", keyText);
 
             // decode plaintext
             decode(cipherText, keyText, plainText);
+            printf("SERVER decoded plaintext: %s\n", plainText);
 
             // send plaintext
             sendAll(plainText, connectionSocket);
