@@ -14,9 +14,7 @@ void error(const char *message, int exitValue) {
 } 
 
 // Set up the address struct
-void setupAddressStruct(struct sockaddr_in* address, 
-                        int portNumber, 
-                        char* hostname) {
+void setupAddressStruct(struct sockaddr_in* address, int portNumber, char* hostname) {
  
     // Clear out the address struct
     memset((char*) address, '\0', sizeof(*address)); 
@@ -38,10 +36,11 @@ void setupAddressStruct(struct sockaddr_in* address,
         hostInfo->h_length);
 }
 
-int processFile(const char *filename, char content[]) {
+int processFile(const char *filename, char content[], char *clientName) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        error("enc_client: ERROR opening input files", 1);
+        fprintf(stderr, "%s: ERROR opening input files", clientName);
+        exit(1);
     }
 
     memset(content, '\0', sizeof(content));
@@ -57,7 +56,8 @@ int processFile(const char *filename, char content[]) {
         }
 
         if (!isupper(currChar) && currChar != ' ') {
-            error("enc_client: ERROR input contains invalid characters", 1);
+            fprintf(stderr, "%s: ERROR input contains invalid characters", clientName);
+            exit(1);
         }
 
         content[charsRead] = currChar;
@@ -82,6 +82,7 @@ int receive(char *string, int socket) {
     char buffer[256];
     int charsRead;
 
+    // loop receive until message ends in "@@"
     int done = 0;
     while(!done) {
         memset(buffer, '\0', 256);
@@ -120,6 +121,7 @@ int receive(char *string, int socket) {
 int sendAll(char *string, int socket) {
     int charsSent = 0, charsLeft = strlen(string), n;
 
+    // loop send until all characters in string are sent
     while(charsSent < strlen(string)) {
         n = send(socket, string + charsSent, charsLeft, 0);
         if (n < 0) {

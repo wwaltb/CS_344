@@ -45,7 +45,24 @@ void encode(char *plainText, char *keyText, char *cipherText) {
 
     int i;
     for(i = 0; plainText[i] != '\0'; i++) {
-        int applyKey = (toInt(plainText[i]) + toInt(keyText[i])) % 27;
-        cipherText[i] = toChar(applyKey);
+        int addKey = (toInt(plainText[i]) + toInt(keyText[i])) % 27;
+        cipherText[i] = toChar(addKey);
+    }
+}
+
+/*
+ * decodes ciphertext into plaintext using the given key
+ * @cipherText: output string for encoded plaintext
+ * @plainText: string of plaintext to encode
+ * @keyText: string of cipher key
+ */
+void decode(char *cipherText, char *keyText, char *plainText) {
+    memset(plainText, '\0', sizeof(plainText));
+
+    int i;
+    for(i = 0; cipherText[i] != '\0'; i++) {
+        int subKey = toInt(plainText[i]) - toInt(keyText[i]);
+        subKey = subKey < 0 ? (subKey + 27) % 27 : subKey % 27;
+        cipherText[i] = toChar(subKey);
     }
 }
