@@ -61,7 +61,7 @@ void decode(char *cipherText, char *keyText, char *plainText) {
 
     int i;
     for(i = 0; cipherText[i] != '\0'; i++) {
-        int subKey = toInt(plainText[i]) - toInt(keyText[i]);
+        int subKey = toInt(cipherText[i]) - toInt(keyText[i]);
         subKey = subKey < 0 ? (subKey + 27) % 27 : subKey % 27;
         plainText[i] = toChar(subKey);
     }
