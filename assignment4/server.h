@@ -48,7 +48,7 @@ int receive(char *string, int socket) {
             break;
         }
 
-        printf("received buffer: %s\n", buffer);
+        printf("SERVER received buffer: %s\n", buffer);
 
         // check if end of data from client
         if (strcmp(buffer, "@@") == 0) {
