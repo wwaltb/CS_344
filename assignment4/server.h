@@ -49,9 +49,6 @@ int receive(char *string, int socket) {
             break;
         }
 
-        printf("SERVER received buffer: %s\n", buffer);
-
-
         int len = strlen(buffer);
         // check for terminating chars
         if (len > 1 && buffer[len - 1] == '@' && buffer[len - 2] == '@') {

@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
     
     // authenticate with enc_server
     receive(buffer, socketFD);
+    printf("CLIENT received: %s\n", buffer);
 
     if (strcmp(buffer, "enc_server") != 0) {
         fprintf(stderr, "enc_client: cannot connect to server other than enc_server\n");
@@ -49,6 +50,7 @@ int main(int argc, char *argv[]) {
 
     // receive plaintext request
     receive(buffer, socketFD);
+    printf("CLIENT received: %s\n", buffer);
 
     if (strcmp(buffer, "plaintext") != 0) {
         fprintf(stderr, "enc_client: expected plaintext request from enc_server\n");
@@ -61,6 +63,7 @@ int main(int argc, char *argv[]) {
 
     // receive key request
     receive(buffer, socketFD);
+    printf("CLIENT received: %s\n", buffer);
 
     if (strcmp(buffer, "key") != 0) {
         fprintf(stderr, "enc_client: expected key request from enc_server\n");
@@ -73,6 +76,7 @@ int main(int argc, char *argv[]) {
 
     // receive ciphertext
     receive(cipherText, socketFD);
+    printf("CLIENT received: %s\n", buffer);
 
     printf("%s\n", cipherText);
 
