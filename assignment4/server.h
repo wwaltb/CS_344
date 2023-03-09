@@ -38,6 +38,7 @@ int receive(char *string, int socket) {
     char buffer[256];
     int charsRead;
 
+    // loop recv until message ends in "@@"
     int done = 0;
     while(!done) {
         memset(buffer, '\0', 256);
