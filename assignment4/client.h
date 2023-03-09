@@ -39,7 +39,7 @@ void setupAddressStruct(struct sockaddr_in* address, int portNumber, char* hostn
 int processFile(const char *filename, char content[], char *clientName) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        fprintf(stderr, "%s: ERROR opening input files", clientName);
+        fprintf(stderr, "%s: ERROR opening input files\n", clientName);
         exit(1);
     }
 
@@ -56,7 +56,7 @@ int processFile(const char *filename, char content[], char *clientName) {
         }
 
         if (!isupper(currChar) && currChar != ' ') {
-            fprintf(stderr, "%s: ERROR input contains invalid characters", clientName);
+            fprintf(stderr, "%s: ERROR input contains invalid characters\n", clientName);
             exit(1);
         }
 

@@ -46,7 +46,6 @@ int receive(char *string, int socket) {
 
         // handle recv error
         if (charsRead < 0) {
-            error("ERROR reading from socket", 1);
             break;
         }
 
@@ -79,8 +78,9 @@ int sendAll(char *string, int socket) {
 
     while(charsSent < strlen(string)) {
         n = send(socket, string + charsSent, charsLeft, 0);
+
+        // handle send error
         if (n < 0) {
-            perror("ERROR writing to socket");
             break;
         }
 
