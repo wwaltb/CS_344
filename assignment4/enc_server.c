@@ -78,14 +78,16 @@ int main(int argc, char *argv[]){
             // send ciphertext
             sendAll(cipherText, connectionSocket);
             sendAll("@@", connectionSocket);
+            
+            // Close the connection socket for this client
+            close(connectionSocket);
+            exit(0);
         }
         // parent process
         else {
-
+            // Close the connection socket for this client
+            close(connectionSocket);
         }
-
-        // Close the connection socket for this client
-        close(connectionSocket);
     }
 
     // Close the listening socket
