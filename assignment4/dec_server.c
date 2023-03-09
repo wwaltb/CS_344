@@ -39,11 +39,7 @@ int main(int argc, char *argv[]){
             perror("dec_server: ERROR on accept");
         }
 
-        printf("dec_server: Connected to client running at host %d port %d\n", 
-                                ntohs(clientAddress.sin_addr.s_addr),
-                                ntohs(clientAddress.sin_port));
-
-        // service client in a childe process
+        // service client in a child process
         pid_t pid = fork();
 
         // error handling for fork()
@@ -69,7 +65,6 @@ int main(int argc, char *argv[]){
 
             // receive ciphertext
             receive(cipherText, connectionSocket);
-            printf("SERVER received ciphertext: %s\n", cipherText);
 
             // request key
             sendAll("key@@", connectionSocket);
@@ -79,7 +74,6 @@ int main(int argc, char *argv[]){
 
             // decode plaintext
             decode(cipherText, keyText, plainText);
-            printf("SERVER decoded plaintext: %s\n", plainText);
 
             // send plaintext
             sendAll(plainText, connectionSocket);

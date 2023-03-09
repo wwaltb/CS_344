@@ -39,11 +39,7 @@ int main(int argc, char *argv[]){
             perror("enc_server: ERROR on accept");
         }
 
-        printf("enc_server: Connected to client running at host %d port %d\n", 
-                                ntohs(clientAddress.sin_addr.s_addr),
-                                ntohs(clientAddress.sin_port));
-
-        // service client in a childe process
+        // service client in a child process
         pid_t pid = fork();
 
         // error handling for fork()
