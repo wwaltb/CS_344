@@ -37,16 +37,12 @@ void *line_seperator_thread(void *args) {
             stop = 1;
         }
 
-        printf("line before: %s\n", line);
-
         // loop through line characters
         int i;
         for(i = 0; i < strlen(line); i++) {
             // replace newlines ('\n') with a space (' ')
             if(line[i] == '\n') line[i] = 'a';
         }
-
-        printf("line after: %s\n", line);
 
         put_buffer_line(buffers[1], line);
     }
@@ -85,12 +81,14 @@ int main(int argc, char **argv) {
     }
 
     // create threads
-    pthread_t input_t, output_t;
+    pthread_t input_t, line_separator_t, output_t;
     pthread_create(&input_t, NULL, input_thread, NULL);
+    pthread_create(&line_separator_t, NULL, line_seperator_thread, NULL);
     pthread_create(&output_t, NULL, output_thread, NULL);
 
     // wait for threads to terminate
     pthread_join(input_t, NULL);
+    pthread_join(line_separator_t, NULL);
     pthread_join(output_t, NULL);
 
     // free global buffer array
