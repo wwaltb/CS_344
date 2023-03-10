@@ -19,7 +19,7 @@ struct buffer {
 
 // function for initializing array of buffers
 struct buffer **init_buffers() {
-    buffers = (struct buffer **) malloc(sizeof(struct buffer *) * NUM_BUFFERS);
+    struct buffer **buffers = (struct buffer **) malloc(sizeof(struct buffer *) * NUM_BUFFERS);
 
     int i;
     for(i = 0; i < NUM_BUFFERS; i++) {
