@@ -93,13 +93,13 @@ void *output_thread(void *args) {
     char line[LINE_SIZE];
 
     while(1) {
-        printf("line: %s\n", line);
+        printf("line 0: %s\n", line);
 
         memset(line, '\0', LINE_SIZE);
-        printf("line: %s\n", line);
+        printf("line 1: %s\n", line);
         get_buffer_line(buffers[2], line);
 
-        printf("line: %s\n", line);
+        printf("line 2: %s\n", line);
 
         if(strcmp(line, "STOP ") == 0) {
             break;
