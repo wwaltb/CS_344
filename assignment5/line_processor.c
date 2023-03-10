@@ -7,14 +7,14 @@
 struct buffer **buffers, *buffer1;
 
 void *input_thread(void *args) {
-    printf("Entering input thread\n");
-
     char input[LINE_SIZE];
 
     int stop = 0;
     while(!stop) {
         memset(input, '\0', LINE_SIZE);
         fgets(input, LINE_SIZE, stdin);
+
+        printf("input: %s\n", input);
 
         if(strcmp(input, "STOP\n")) {
             stop = 1;
@@ -27,8 +27,6 @@ void *input_thread(void *args) {
 }
 
 void *output_thread(void *args) {
-    printf("Entering output thread\n");
-
     char line[LINE_SIZE];
 
     int stop = 0;

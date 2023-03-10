@@ -43,6 +43,8 @@ void free_buffers(struct buffer **buffers) {
 
 // function to put a line into the buffer
 void put_buffer_line(struct buffer *buffer, char *line) {
+    printf("---Entering put_buffer_line\n");
+
     // lock mutex before putting item into buffer
     pthread_mutex_lock(&buffer->mutex);
 
@@ -62,7 +64,7 @@ void put_buffer_line(struct buffer *buffer, char *line) {
 
 // function to get a line from the buffer
 void get_buffer_line(struct buffer *buffer, char *line) {
-    printf("Entering get_buffer_line\n");
+    printf("---Entering get_buffer_line\n");
 
     // store line from buffer at consumer index and its length
     strcpy(line, buffer->buffer[buffer->con_idx]);
