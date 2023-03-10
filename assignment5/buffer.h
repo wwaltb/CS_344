@@ -62,10 +62,6 @@ void put_buffer_line(struct buffer *buffer, char *line) {
 
 // function to get a line from the buffer
 void get_buffer_line(struct buffer *buffer, char *line) {
-    // store line from buffer at consumer index and its length
-    strcpy(line, buffer->buffer[buffer->con_idx]);
-    int len = strlen(line);
-
     // lock mutex before checking if line has data
     pthread_mutex_lock(&buffer->mutex);
 

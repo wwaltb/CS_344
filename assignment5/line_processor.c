@@ -54,13 +54,6 @@ int main(int argc, char **argv) {
         pthread_mutex_init(&buffers[i]->mutex, NULL);
         pthread_cond_init(&buffers[i]->full, NULL);
     }
-    
-    buffer1 = (struct buffer *) malloc(sizeof(struct buffer));
-    buffer1->prod_idx = 0;
-    buffer1->con_idx = 0;
-    buffer1->count = 0;
-    buffer1->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-    buffer1->full = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 
     printf("buffers initialized\n");
 
@@ -78,6 +71,9 @@ int main(int argc, char **argv) {
     printf("threads terminated\n");
 
     // free global buffer array
+    for(i = 0; i < NUM_BUFFERS; i++) {
+        free(buffers[i]);
+    }
     free(buffers);
 
     printf("buffers freed\n");
