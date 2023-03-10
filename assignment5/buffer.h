@@ -65,16 +65,13 @@ void get_buffer_line(struct buffer *buffer, char *line) {
     // lock mutex before checking if line has data
     pthread_mutex_lock(&buffer->mutex);
 
-    printf("buffer before: %s\n", buffer->buffer[buffer->con_idx]);
-
     // wait if line is empty
     while(buffer->count == 0) {
         pthread_cond_wait(&buffer->full, &buffer->mutex);
     }
 
-    printf("buffer after: %s\n", buffer->buffer[buffer->con_idx]);
+    // put buffer into output
     strcpy(line, buffer->buffer[buffer->con_idx]);
-    printf("buffer in line: %s\n", line);
 
     // increment consumer index and decrement count
     buffer->con_idx++;

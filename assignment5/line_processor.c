@@ -57,6 +57,7 @@ void *plus_sign_thread(void *args) {
     int stop = 0;
     while(!stop) {
         memset(line, '\0', LINE_SIZE);
+        memset(replaced_line, '\0', LINE_SIZE);
         get_buffer_line(buffers[1], line);
 
         if(strcmp(line, "STOP ") == 0) {
