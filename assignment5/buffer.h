@@ -60,6 +60,8 @@ void put_buffer_line(struct buffer *buffer, char *line) {
 
     // unlock mutex
     pthread_mutex_unlock(&buffer->mutex);
+
+    printf("---Exiting put_buffer_line\n");
 }
 
 // function to get a line from the buffer
