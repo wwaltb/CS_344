@@ -43,7 +43,18 @@ void *output_thread(void *args) {
 
 int main(int argc, char **argv) {
     // initialize global buffer array
-    buffers = init_buffers();
+    buffers = (struct buffer **) malloc(sizeof(struct buffer *) * NUM_BUFFERS);
+
+    int i;
+    for(i = 0; i < NUM_BUFFERS; i++) {
+        buffers[i] = (struct buffer *) malloc(sizeof(struct buffer));
+        buffers[i]->prod_idx = 0;
+        buffers[i]->con_idx = 0;
+        buffers[i]->count = 0;
+        pthread_mutex_init(&buffers[i]->mutex, NULL);
+        pthread_cond_init(&buffers[i]->full, NULL);
+    }
+    
     buffer1 = (struct buffer *) malloc(sizeof(struct buffer));
     buffer1->prod_idx = 0;
     buffer1->con_idx = 0;
