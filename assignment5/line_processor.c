@@ -93,19 +93,17 @@ void *output_thread(void *args) {
     char buffer[MAX_LINES * LINE_SIZE];
     char line[LINE_SIZE];
 
-    int stop = 0;
-    while(!stop) {
+    while(1) {
         memset(line, '\0', LINE_SIZE);
         get_buffer_line(buffers[2], line);
 
         if(strcmp(line, "STOP ") == 0) {
             break;
-            memset(line, '\0', LINE_SIZE);
         }
 
         strcat(buffer, line);
 
-        // print line if buffer is at least 80 chars
+        // print line while buffer is at least 80 chars
         while(strlen(buffer) >= 80) {
             printf("%.80s\n", buffer);
             memmove(buffer, buffer + 80, strlen(buffer) - 80 + 1);
