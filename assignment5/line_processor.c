@@ -18,6 +18,7 @@ void *input_thread(void *args) {
         printf("input: %s\n", input);
 
         if(strcmp(input, "STOP\n")) {
+            printf("stopping\n");
             stop = 1;
         }
 
