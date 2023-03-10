@@ -18,7 +18,7 @@ void *input_thread(void *args) {
             stop = 1;
         }
 
-        put_buffer_line(buffer1, input);
+        put_buffer_line(buffers[0], input);
     }
 
     return NULL;
@@ -29,7 +29,7 @@ void *output_thread(void *args) {
 
     int stop = 0;
     while(!stop) {
-        get_buffer_line(buffer1, line);
+        get_buffer_line(buffers[0], line);
         printf("line: %s\n", line);
 
         if(strcmp(line, "STOP\n") == 0) {
