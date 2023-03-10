@@ -48,13 +48,50 @@ void *line_seperator_thread(void *args) {
     }
 }
 
+// plus sign thread
+void *plus_sign_thread(void *args) {
+    char line[LINE_SIZE];
+    char replaced_line[LINE_SIZE];
+
+    int stop = 0;
+    while(!stop) {
+        get_buffer_line(buffers[1], line);
+
+        if(strcmp(line, "STOP ") == 0) {
+            stop = 1;
+        }
+
+        // loop through line characters
+        int i = 0;      // line iterator
+        int j = 0;      // replaced_line iterator
+        while(i < strlen(line)) {
+            // replace "++" with "^"
+            if(line[i] == '+' && line[i+1] == '+') {
+                // add '^' char to replaced_line
+                replaced_line[j] = '^';
+                i += 2;
+                j += 1;
+            }
+            // don't replace
+            else {
+                // add line char to replaced_line
+                replaced_line[j] = line[i];
+                i++;
+                j++;
+            }
+        }
+
+        put_buffer_line(buffers[2], replaced_line);
+    }
+}
+
 // output thread
 void *output_thread(void *args) {
     char line[LINE_SIZE];
 
     int stop = 0;
     while(!stop) {
-        get_buffer_line(buffers[1], line);
+        get_buffer_line(buffers[2], line);
         printf("line: %s\n", line);
 
         if(strcmp(line, "STOP ") == 0) {
@@ -81,14 +118,16 @@ int main(int argc, char **argv) {
     }
 
     // create threads
-    pthread_t input_t, line_separator_t, output_t;
+    pthread_t input_t, line_separator_t, plus_sign_t, output_t;
     pthread_create(&input_t, NULL, input_thread, NULL);
     pthread_create(&line_separator_t, NULL, line_seperator_thread, NULL);
+    pthread_create(&plus_sign_t, NULL, plus_sign_thread, NULL);
     pthread_create(&output_t, NULL, output_thread, NULL);
 
     // wait for threads to terminate
     pthread_join(input_t, NULL);
     pthread_join(line_separator_t, NULL);
+    pthread_join(plus_sign_t, NULL);
     pthread_join(output_t, NULL);
 
     // free global buffer array
