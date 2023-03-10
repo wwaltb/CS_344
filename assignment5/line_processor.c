@@ -4,7 +4,7 @@
 #include "buffer.h"
 
 // create buffers
-struct buffer **buffers;
+struct buffer **buffers, *buffer1;
 
 void *input_thread(void *args) {
     printf("Entering input thread\n");
@@ -20,7 +20,7 @@ void *input_thread(void *args) {
             stop = 1;
         }
 
-        put_buffer_line(buffers[0], input);
+        put_buffer_line(buffer1, input);
     }
 
     return NULL;
@@ -33,7 +33,7 @@ void *output_thread(void *args) {
 
     int stop = 0;
     while(!stop) {
-        get_buffer_line(buffers[0], line);
+        get_buffer_line(buffer1, line);
         printf("line: %s\n", line);
     }
 
@@ -44,6 +44,12 @@ void *output_thread(void *args) {
 int main(int argc, char **argv) {
     // initialize global buffer array
     init_buffers(buffers);
+    buffer1 = (struct buffer *) malloc(sizeof(struct buffer));
+    buffer1->prod_idx = 0;
+    buffer1->con_idx = 0;
+    buffer1->count = 0;
+    buffer1->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+    buffer1->full = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 
     printf("buffers initialized\n");
 
