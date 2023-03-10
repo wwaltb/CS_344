@@ -7,6 +7,8 @@
 struct buffer **buffers;
 
 void *input_thread(void *args) {
+    printf("Entering input thread\n");
+
     char input[LINE_SIZE];
 
     int stop = 0;
@@ -24,6 +26,8 @@ void *input_thread(void *args) {
 }
 
 void *output_thread(void *args) {
+    printf("Entering output thread\n");
+
     char line[LINE_SIZE];
 
     int stop = 0;
