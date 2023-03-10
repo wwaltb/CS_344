@@ -99,7 +99,7 @@ void *output_thread(void *args) {
         get_buffer_line(buffers[2], line);
 
         if(strcmp(line, "STOP ") == 0) {
-            stop = 1;
+            break;
             memset(line, '\0', LINE_SIZE);
         }
 
