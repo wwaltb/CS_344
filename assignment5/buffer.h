@@ -12,6 +12,7 @@ struct buffer {
     char buffer[MAX_LINES][LINE_SIZE];
     int prod_idx;
     int con_idx;
+    int count;
     pthread_mutex_t mutex;
     pthread_cond_t full;
 };
@@ -25,6 +26,7 @@ void init_buffers(struct buffer **buffers) {
         buffers[i] = (struct buffer *) malloc(sizeof(struct buffer));
         buffers[i]->prod_idx = 0;
         buffers[i]->con_idx = 0;
+        buffers[i]->count = 0;
         buffers[i]->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
         buffers[i]->full = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
     }
@@ -47,8 +49,9 @@ void put_buffer_line(struct buffer *buffer, char *line) {
     // put item into buffer
     strcpy(buffer->buffer[buffer->prod_idx], line);
 
-    // increment producer index
+    // increment producer index and count
     buffer->prod_idx++;
+    buffer->count++;
 
     // signal to consumer that buffer isn't empty
     pthread_cond_signal(&buffer->full);
@@ -71,16 +74,17 @@ void get_buffer_line(struct buffer *buffer, char *line) {
     pthread_mutex_lock(&buffer->mutex);
 
     // wait if line is empty
-    while(len == 0) {
+    while(buffer->count == 0) {
         pthread_cond_wait(&buffer->full, &buffer->mutex);
-        strcpy(line, buffer->buffer[buffer->con_idx]);
-        len = strlen(line);
     }
+
+    strcpy(line, buffer->buffer[buffer->con_idx]);
 
     printf("line: %s\n", line);
 
-    // increment consumer index
+    // increment consumer index and decrement count
     buffer->con_idx++;
+    buffer->count--;
 
     // unlock mutex
     pthread_mutex_unlock(&buffer->mutex);
