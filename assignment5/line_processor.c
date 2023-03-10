@@ -106,7 +106,7 @@ void *output_thread(void *args) {
         strcat(buffer, line);
 
         // print line if buffer is at least 80 chars
-        if(strlen(buffer) >= 80) {
+        while(strlen(buffer) >= 80) {
             printf("%.80s\n", buffer);
             memmove(buffer, buffer + 80, strlen(buffer) - 80 + 1);
         }
