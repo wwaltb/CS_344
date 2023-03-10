@@ -46,8 +46,8 @@ int main(int argc, char **argv) {
     pthread_create(&output_t, NULL, output_thread, NULL);
 
     // wait for threads to terminate
-    pthread_join(&input_t, NULL);
-    pthread_join(&output_t, NULL);
+    pthread_join(input_t, NULL);
+    pthread_join(output_t, NULL);
 
     // free global buffer array
     free(buffers);
