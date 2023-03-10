@@ -93,6 +93,8 @@ void *output_thread(void *args) {
     while(1) {
         get_buffer_line(buffers[2], line);
 
+        printf("line: %s\n", line);
+
         if(strcmp(line, "STOP ") == 0) {
             break;
         }
