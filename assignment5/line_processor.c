@@ -40,6 +40,8 @@ int main(int argc, char **argv) {
     // initialize global buffer array
     init_buffers(buffers);
 
+    printf("buffers initialized\n");
+
     // create threads
     pthread_t input_t, output_t;
     pthread_create(&input_t, NULL, input_thread, NULL);
