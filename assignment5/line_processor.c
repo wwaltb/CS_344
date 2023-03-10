@@ -33,12 +33,20 @@ void *line_seperator_thread(void *args) {
     while(!stop) {
         get_buffer_line(buffers[0], line);
 
+        if(strcmp(line, "STOP\n") == 0) {
+            stop = 1;
+        }
+
+        printf("line before: %s\n", line);
+
         // loop through line characters
         int i;
         for(i = 0; i < strlen(line); i++) {
             // replace newlines ('\n') with a space (' ')
             if(line[i] == '\n') line[i] = 'a';
         }
+
+        printf("line after: %s\n", line);
 
         put_buffer_line(buffers[1], line);
     }
