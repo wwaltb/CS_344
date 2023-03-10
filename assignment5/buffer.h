@@ -70,7 +70,6 @@ void get_buffer_line(struct buffer *buffer, char *line) {
         pthread_cond_wait(&buffer->full, &buffer->mutex);
     }
 
-    memset(line, '\0', sizeof(line));
     strcpy(line, buffer->buffer[buffer->con_idx]);
 
     // increment consumer index and decrement count

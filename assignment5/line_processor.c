@@ -15,6 +15,8 @@ void *input_thread(void *args) {
         memset(input, '\0', LINE_SIZE);
         fgets(input, LINE_SIZE, stdin);
 
+        printf("input: %s\n", input);
+
         if(strcmp(input, "STOP\n") == 0) {
             stop = 1;
         }
