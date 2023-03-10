@@ -7,11 +7,11 @@
 struct buffer **buffers, *buffer1;
 
 void *input_thread(void *args) {
-    printf("---Entering input thread\n");
     char input[LINE_SIZE];
 
     int stop = 0;
     while(!stop) {
+        printf("---Entering input loop\n");
         memset(input, '\0', LINE_SIZE);
         fgets(input, LINE_SIZE, stdin);
 
