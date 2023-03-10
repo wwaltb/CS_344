@@ -3,9 +3,10 @@
 #include <pthread.h>
 #include "buffer.h"
 
-// create buffers
-struct buffer **buffers, *buffer1;
+// create buffers array
+struct buffer **buffers;
 
+// input thread
 void *input_thread(void *args) {
     char input[LINE_SIZE];
 
@@ -24,12 +25,32 @@ void *input_thread(void *args) {
     return NULL;
 }
 
-void *output_thread(void *args) {
+// line seperator thread
+void *line_seperator_thread(void *args) {
     char line[LINE_SIZE];
 
     int stop = 0;
     while(!stop) {
         get_buffer_line(buffers[0], line);
+
+        // loop through line characters
+        int i;
+        for(i = 0; i < strlen(line); i++) {
+            // replace newlines ('\n') with a space (' ')
+            if(line[i] == '\n') line[i] = 'a';
+        }
+
+        put_buffer_line(buffers[1], line);
+    }
+}
+
+// output thread
+void *output_thread(void *args) {
+    char line[LINE_SIZE];
+
+    int stop = 0;
+    while(!stop) {
+        get_buffer_line(buffers[1], line);
         printf("line: %s\n", line);
 
         if(strcmp(line, "STOP\n") == 0) {
@@ -55,28 +76,20 @@ int main(int argc, char **argv) {
         pthread_cond_init(&buffers[i]->full, NULL);
     }
 
-    printf("buffers initialized\n");
-
     // create threads
     pthread_t input_t, output_t;
     pthread_create(&input_t, NULL, input_thread, NULL);
     pthread_create(&output_t, NULL, output_thread, NULL);
 
-    printf("threads created\n");
-
     // wait for threads to terminate
     pthread_join(input_t, NULL);
     pthread_join(output_t, NULL);
-
-    printf("threads terminated\n");
 
     // free global buffer array
     for(i = 0; i < NUM_BUFFERS; i++) {
         free(buffers[i]);
     }
     free(buffers);
-
-    printf("buffers freed\n");
 
     return(0);
 }
