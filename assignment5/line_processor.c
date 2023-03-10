@@ -43,7 +43,7 @@ void *output_thread(void *args) {
 
 int main(int argc, char **argv) {
     // initialize global buffer array
-    init_buffers(buffers);
+    buffers = init_buffers();
     buffer1 = (struct buffer *) malloc(sizeof(struct buffer));
     buffer1->prod_idx = 0;
     buffer1->con_idx = 0;
