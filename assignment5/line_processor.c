@@ -13,7 +13,7 @@ void *input_thread(void *args) {
 
     int stop = 0;
     while(!stop) {
-        printf("input line: ");
+        memset(input, '\0', LINE_SIZE);
         fgets(input, LINE_SIZE, stdin);
 
         if(strcmp(input, "STOP\n")) {
