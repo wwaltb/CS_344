@@ -11,14 +11,10 @@ void *input_thread(void *args) {
 
     int stop = 0;
     while(!stop) {
-        printf("---Entering input loop\n");
         memset(input, '\0', LINE_SIZE);
         fgets(input, LINE_SIZE, stdin);
 
-        printf("input: %s\n", input);
-
         if(strcmp(input, "STOP\n") == 0) {
-            printf("stopping\n");
             stop = 1;
         }
 
@@ -35,6 +31,10 @@ void *output_thread(void *args) {
     while(!stop) {
         get_buffer_line(buffer1, line);
         printf("line: %s\n", line);
+
+        if(strcmp(line, "STOP\n") == 0) {
+            stop = 1;
+        }
     }
 
     return NULL;
