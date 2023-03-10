@@ -87,15 +87,23 @@ void *plus_sign_thread(void *args) {
 
 // output thread
 void *output_thread(void *args) {
+    char buffer[MAX_LINES * LINE_SIZE];
     char line[LINE_SIZE];
 
-    int stop = 0;
-    while(!stop) {
+    while(1) {
         get_buffer_line(buffers[2], line);
-        printf("line: %s\n", line);
 
         if(strcmp(line, "STOP ") == 0) {
-            stop = 1;
+            break;
+        }
+
+        strcat(buffer, line);
+
+        // print line if buffer is at least 80 chars
+        size_t len = strlen(buffer);
+        if(len >= 80) {
+            printf("%.80s\n", buffer);
+            memmove(buffer, buffer + 80, len - 80 + 1);
         }
     }
 
