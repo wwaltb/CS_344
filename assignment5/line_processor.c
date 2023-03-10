@@ -90,9 +90,10 @@ void *plus_sign_thread(void *args) {
 // output thread
 void *output_thread(void *args) {
     char buffer[MAX_LINES * LINE_SIZE];
-    char line[LINE_SIZE];
+
 
     while(1) {
+        char line[LINE_SIZE];
         printf("line 0: %s\n", line);
 
         memset(line, '\0', LINE_SIZE);
