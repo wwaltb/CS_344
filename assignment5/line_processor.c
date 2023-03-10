@@ -41,7 +41,7 @@ void *line_seperator_thread(void *args) {
         int i;
         for(i = 0; i < strlen(line); i++) {
             // replace newlines ('\n') with a space (' ')
-            if(line[i] == '\n') line[i] = 'a';
+            if(line[i] == '\n') line[i] = ' ';
         }
 
         put_buffer_line(buffers[1], line);
@@ -57,7 +57,7 @@ void *output_thread(void *args) {
         get_buffer_line(buffers[1], line);
         printf("line: %s\n", line);
 
-        if(strcmp(line, "STOP\n") == 0) {
+        if(strcmp(line, "STOP ") == 0) {
             stop = 1;
         }
     }
