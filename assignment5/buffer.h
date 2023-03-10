@@ -27,8 +27,8 @@ void init_buffers(struct buffer **buffers) {
         buffers[i]->prod_idx = 0;
         buffers[i]->con_idx = 0;
         buffers[i]->count = 0;
-        buffers[i]->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-        buffers[i]->full = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
+        pthread_mutex_init(&buffers[i]->mutex, NULL);
+        pthread_cond_init(&buffers[i]->full, NULL);
     }
 }
 
