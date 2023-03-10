@@ -33,6 +33,7 @@ void *line_seperator_thread(void *args) {
 
     int stop = 0;
     while(!stop) {
+        memset(line, '\0', LINE_SIZE);
         get_buffer_line(buffers[0], line);
 
         if(strcmp(line, "STOP\n") == 0) {
@@ -57,6 +58,7 @@ void *plus_sign_thread(void *args) {
 
     int stop = 0;
     while(!stop) {
+        memset(line, '\0', LINE_SIZE);
         get_buffer_line(buffers[1], line);
 
         if(strcmp(line, "STOP ") == 0) {
@@ -93,6 +95,7 @@ void *output_thread(void *args) {
     char line[LINE_SIZE];
 
     while(1) {
+        memset(line, '\0', LINE_SIZE);
         get_buffer_line(buffers[2], line);
 
         printf("line: %s\n", line);
