@@ -47,12 +47,18 @@ int main(int argc, char **argv) {
     pthread_create(&input_t, NULL, input_thread, NULL);
     pthread_create(&output_t, NULL, output_thread, NULL);
 
+    printf("threads created\n");
+
     // wait for threads to terminate
     pthread_join(input_t, NULL);
     pthread_join(output_t, NULL);
 
+    printf("threads terminated\n");
+
     // free global buffer array
     free(buffers);
+
+    printf("buffers freed\n");
 
     return(0);
 }
