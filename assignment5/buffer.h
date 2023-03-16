@@ -17,30 +17,6 @@ struct buffer {
     pthread_cond_t full;
 };
 
-// function for initializing array of buffers
-struct buffer **init_buffers() {
-    struct buffer **buffers = (struct buffer **) malloc(sizeof(struct buffer *) * NUM_BUFFERS);
-
-    int i;
-    for(i = 0; i < NUM_BUFFERS; i++) {
-        buffers[i] = (struct buffer *) malloc(sizeof(struct buffer));
-        buffers[i]->prod_idx = 0;
-        buffers[i]->con_idx = 0;
-        buffers[i]->count = 0;
-        pthread_mutex_init(&buffers[i]->mutex, NULL);
-        pthread_cond_init(&buffers[i]->full, NULL);
-    }
-}
-
-// function for freeing array of buffers
-void free_buffers(struct buffer **buffers) {
-    int i;
-    for(i = 0; i < NUM_BUFFERS; i++) {
-        free(buffers[i]);
-    }
-    free(buffers);
-}
-
 // function to put a line into the buffer
 void put_buffer_line(struct buffer *buffer, char *line) {
     // lock mutex before putting item into buffer
